@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .border-bot-only {
+        border-width: 0 0 2px 0; /* top right bottom left */
+        border-color: #333; /* Border color */
+        border-style: solid; /* Solid border style */
+      }
+
+      .btn-warning{
+        @apply text-gray-50 border border-gray-600 rounded p-2 bg-red-600 hover:bg-red-700 shadow-md 
+      }
+
+      .btn-success{
+        @apply  text-gray-50 border border-gray-600 rounded p-2 bg-green-500 hover:bg-green-700 shadow-md 
+      }
+      
+      .btn-primary{
+        @apply bg-blue-700 hover:bg-blue-600 hover:text-white my-2 py-2 rounded text-gray-100 rounded-lg
+      }
+
+      .btn-pagination
+      {
+         @apply px-4 py-2 mx-1 bg-blue-800 text-white rounded-md disabled:opacity-50
+      }
+  }
+
+  /* Order */
+@layer reset, primevue;
+
+/* Reset CSS */
+@layer reset {
+    button,
+    input {
+        /* CSS to Reset */
+    }
+}
