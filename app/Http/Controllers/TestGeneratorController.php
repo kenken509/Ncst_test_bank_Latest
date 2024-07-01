@@ -165,8 +165,8 @@ class TestGeneratorController extends Controller
                 $finalQuestions = Question::where('term', 'final')->inRandomOrder()->take($request->final_count ?? 0)->get()->unique('id');
 
                 // Merge all questions into one collection
-                $questionSet = $prelimQuestions->merge($midtermQuestions)->merge($preFinalQuestions)->merge($finalQuestions);
-
+                //$questionSet = $prelimQuestions->merge($midtermQuestions)->merge($preFinalQuestions)->merge($finalQuestions);
+                $questionSet = $prelimQuestions->merge($finalQuestions);
                 // Generate PDF for the current set
                 $filename = $this->generatePDF($set, $questionSet, $subject_code_name, $department, $request->semester, $request->term);
                 $pdfFiles[] = $filename;
@@ -202,6 +202,7 @@ class TestGeneratorController extends Controller
 
     private function generatePDF($set, $questionSet, $subject_code_name, $department, $semester, $term)
     {
+        
         $user = Auth::user();
         $pdf = new TCPDF();
 
@@ -225,9 +226,19 @@ class TestGeneratorController extends Controller
         $pdf->writeHTML('<h4>Semester: ' . $semester . ' Term: ' . $term . '</h4>', true, false, true, false, '');
 
         foreach ($questionSet as $question) {
+            
             $pdf->writeHTML('<p>' . $question->question . '</p>', true, false, true, false, '');
             foreach ($question->options as $option) {
-                $pdf->writeHTML('<p>- ' . $option->option . '</p>', true, false, true, false, '');
+                if($question->type == 'text')
+                {
+                    $pdf->writeHTML('<p>- ' . $option->option . '</p>', true, false, true, false, '');
+                }
+                else if($question->type == 'image')
+                {
+                    $imageFilePath = public_path('storage/Images/' . $option->option); // Adjust the path as needed
+                    $html = '<p>- <img src="' . $imageFilePath . '" width="100" /></p>'; // Adjust width as needed
+                    $pdf->writeHTML($html, true, false, true, false, '');
+                }
             }
         }
 
