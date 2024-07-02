@@ -204,66 +204,67 @@ class TestGeneratorController extends Controller
 
 
     private function generatePDF($set, $questionSet, $subject_code_name, $department, $semester, $term)
-{
-    $user = Auth::user();
-    $pdf = new CustomTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    {
+        $user = Auth::user();
+        $pdf = new CustomTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor($user->role . ' ' . $user->name);
-    $pdf->SetTitle($term . ' Exam in ' . $subject_code_name);
-    $pdf->SetSubject('Generated Exam Paper');
-    $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor($user->role . ' ' . $user->name);
+        $pdf->SetTitle($term . ' Exam in ' . $subject_code_name);
+        $pdf->SetSubject('Generated Exam Paper');
+        $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
 
-    $pdf->SetMargins(10, 10, 10, true);
-    $pdf->setPrintHeader(true);
-    $pdf->setPrintFooter(false);
-    
-    $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
-    $pdf->setFontSubsetting(true);
-    $pdf->SetFont('dejavusans', '', 12);
-
-    $pdf->AddPage();
-
-    // Write header information
-    $pdf->SetY(73);
-    
-    // $pdf->writeHTML('<h1>Exam Set: ' . $set . '</h1>', true, false, true, false, '');
-    // $pdf->writeHTML('<h2>Subject: ' . $subject_code_name . '</h2>', true, false, true, false, '');
-    // $pdf->writeHTML('<h3>Department: ' . $department . '</h3>', true, false, true, false, '');
-    // $pdf->writeHTML('<h4>Semester: ' . $semester . ' Term: ' . $term . '</h4>', true, false, true, false, '');
-    $number = 0;
-    foreach ($questionSet as $question) {
-        // Check if the current position + content height exceeds the page boundary
-        // if ($pdf->GetY() + 10 > $pdf->getPageHeight() - PDF_MARGIN_BOTTOM) {
-        //     $pdf->AddPage(); // Add a new page if necessary
-        //     // Re-add header on new page if needed
-        //     $pdf->writeHTML('<h1>Exam Set: ' . $set . '</h1>', true, false, true, false, '');
-        //     $pdf->writeHTML('<h2>Subject: ' . $subject_code_name . '</h2>', true, false, true, false, '');
-        //     $pdf->writeHTML('<h3>Department: ' . $department . '</h3>', true, false, true, false, '');
-        //     $pdf->writeHTML('<h4>Semester: ' . $semester . ' Term: ' . $term . '</h4>', true, false, true, false, '');
-        // }
-        $number++;
+        $pdf->SetMargins(10, 10, 10, true);
+        $pdf->setPrintHeader(true);
+        $pdf->setPrintFooter(false);
         
-        $pdf->writeHTML('<p>' .$number.'. '.$question->question . '</p>', true, false, true, false, '');
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+        $pdf->setFontSubsetting(true);
+        $pdf->SetFont('dejavusans', '', 12);
 
-        foreach ($question->options as $option) {
-            if ($question->type == 'text') {
-                
-                $pdf->writeHTML('<p>- ' . $option->option . '</p>', true, false, true, false, '');
-            } else if ($question->type == 'image') {
-                
-                $imageFilePath = public_path('storage/Images/' . $option->option); // Adjust the path as needed
-                $html = '<p>- <img src="' . $imageFilePath . '" width="100" /></p>'; // Adjust width as needed
-                $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->AddPage();
+
+        // Write header information
+        $pdf->SetY(73);
+
+        $number = 0;
+        foreach ($questionSet as $question) 
+        {
+            $number++;
+            
+            $pdf->cell(0, 10,$number . '. ' . $question->question,0,0,'L',false,'');
+            $pdf->ln();
+            if ($question->type == 'text')
+            {
+                $pdf->setCellPaddings(2, 2, 2, 2);
+                $xPos = $pdf->GetX();
+                $pageWidth = $pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'];
+                $cellWidth = ($pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'] - 6 ) / 4; // Width of each cell
+                $cellSpacing = 2; // Space between cells
+                $currentWidth = 0;
+                foreach ($question->options as $option) 
+                {
+                    if ($currentWidth + $cellWidth > $pageWidth) {
+                        // Move to the next line if the width exceeds the page width
+                        $pdf->Ln();
+                        $xPos = $pdf->GetX();
+                        $currentWidth = 0;
+                    }
+                    $pdf->SetX($xPos + $currentWidth +5);
+                    $pdf->MultiCell($cellWidth, 5, $option->option, 0, 'L', 0, 0, '', '', true);
+                    $currentWidth += $cellWidth + $cellSpacing;
+                }
+                $pdf->Ln(); // Move to the next line after options
             }
         }
+
+        $filename = 'exam_' . $set . '_' . time() . '.pdf';
+        $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
+
+        return $filename;
     }
 
-    $filename = 'exam_' . $set . '_' . time() . '.pdf';
-    $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
 
-    return $filename;
-}
 
 
 
