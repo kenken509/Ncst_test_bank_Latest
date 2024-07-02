@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use TCPDF;
 use ZipArchive;
+use App\Pdf\CustomPDF;
 use App\Models\Question;
+use App\Pdf\CustomTCPDF;
 use App\Models\Department;
 use App\Models\SubjectCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+
 class TestGeneratorController extends Controller
 {
     public function showTestGenerator()
@@ -201,52 +204,68 @@ class TestGeneratorController extends Controller
 
 
     private function generatePDF($set, $questionSet, $subject_code_name, $department, $semester, $term)
-    {
+{
+    $user = Auth::user();
+    $pdf = new CustomTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor($user->role . ' ' . $user->name);
+    $pdf->SetTitle($term . ' Exam in ' . $subject_code_name);
+    $pdf->SetSubject('Generated Exam Paper');
+    $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
+
+    $pdf->SetMargins(10, 10, 10, true);
+    $pdf->setPrintHeader(true);
+    $pdf->setPrintFooter(false);
+    
+    $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+    $pdf->setFontSubsetting(true);
+    $pdf->SetFont('dejavusans', '', 12);
+
+    $pdf->AddPage();
+
+    // Write header information
+    $pdf->SetY(73);
+    
+    // $pdf->writeHTML('<h1>Exam Set: ' . $set . '</h1>', true, false, true, false, '');
+    // $pdf->writeHTML('<h2>Subject: ' . $subject_code_name . '</h2>', true, false, true, false, '');
+    // $pdf->writeHTML('<h3>Department: ' . $department . '</h3>', true, false, true, false, '');
+    // $pdf->writeHTML('<h4>Semester: ' . $semester . ' Term: ' . $term . '</h4>', true, false, true, false, '');
+    $number = 0;
+    foreach ($questionSet as $question) {
+        // Check if the current position + content height exceeds the page boundary
+        // if ($pdf->GetY() + 10 > $pdf->getPageHeight() - PDF_MARGIN_BOTTOM) {
+        //     $pdf->AddPage(); // Add a new page if necessary
+        //     // Re-add header on new page if needed
+        //     $pdf->writeHTML('<h1>Exam Set: ' . $set . '</h1>', true, false, true, false, '');
+        //     $pdf->writeHTML('<h2>Subject: ' . $subject_code_name . '</h2>', true, false, true, false, '');
+        //     $pdf->writeHTML('<h3>Department: ' . $department . '</h3>', true, false, true, false, '');
+        //     $pdf->writeHTML('<h4>Semester: ' . $semester . ' Term: ' . $term . '</h4>', true, false, true, false, '');
+        // }
+        $number++;
         
-        $user = Auth::user();
-        $pdf = new TCPDF();
+        $pdf->writeHTML('<p>' .$number.'. '.$question->question . '</p>', true, false, true, false, '');
 
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor($user->role.' '.$user->name);
-        $pdf->SetTitle($term.' Exam in '.$subject_code_name);
-        $pdf->SetSubject('Generated Exam Paper');
-        $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
-
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        $pdf->setFontSubsetting(true);
-        $pdf->SetFont('dejavusans', '', 12);
-        $pdf->AddPage();
-
-        $pdf->writeHTML('<h1>Exam Set: ' . $set . '</h1>', true, false, true, false, '');
-        $pdf->writeHTML('<h2>Subject: ' . $subject_code_name . '</h2>', true, false, true, false, '');
-        $pdf->writeHTML('<h3>Department: ' . $department . '</h3>', true, false, true, false, '');
-        $pdf->writeHTML('<h4>Semester: ' . $semester . ' Term: ' . $term . '</h4>', true, false, true, false, '');
-
-        foreach ($questionSet as $question) {
-            
-            $pdf->writeHTML('<p>' . $question->question . '</p>', true, false, true, false, '');
-            foreach ($question->options as $option) {
-                if($question->type == 'text')
-                {
-                    $pdf->writeHTML('<p>- ' . $option->option . '</p>', true, false, true, false, '');
-                }
-                else if($question->type == 'image')
-                {
-                    $imageFilePath = public_path('storage/Images/' . $option->option); // Adjust the path as needed
-                    $html = '<p>- <img src="' . $imageFilePath . '" width="100" /></p>'; // Adjust width as needed
-                    $pdf->writeHTML($html, true, false, true, false, '');
-                }
+        foreach ($question->options as $option) {
+            if ($question->type == 'text') {
+                
+                $pdf->writeHTML('<p>- ' . $option->option . '</p>', true, false, true, false, '');
+            } else if ($question->type == 'image') {
+                
+                $imageFilePath = public_path('storage/Images/' . $option->option); // Adjust the path as needed
+                $html = '<p>- <img src="' . $imageFilePath . '" width="100" /></p>'; // Adjust width as needed
+                $pdf->writeHTML($html, true, false, true, false, '');
             }
         }
-
-        $filename = 'exam_' . $set . '_' . time() . '.pdf';
-        $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
-
-        return $filename;
     }
+
+    $filename = 'exam_' . $set . '_' . time() . '.pdf';
+    $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
+
+    return $filename;
+}
+
+
 
     private function createZip($files)
     {
