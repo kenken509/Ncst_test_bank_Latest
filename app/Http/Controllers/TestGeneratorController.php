@@ -374,10 +374,10 @@ class TestGeneratorController extends Controller
                 $imageHeight = 34;
                 // Add the text "A."
                 $pdf->SetX(10);
-                $pdf->MultiCell(10,5,'A. ',0,'J',0,1,15,$y+5,true); //+3
-                $pdf->MultiCell(10,5,'B. ',0,'J',0,1,62,$y+5,true);
-                $pdf->MultiCell(10,5,'C. ',0,'J',0,1,109,$y+5,true);
-                $pdf->MultiCell(10,5,'D. ',0,'J',0,1,156,$y+5,true);
+                $pdf->MultiCell(10,5,'A. ',0,'J',0,0,15,$y+5,true); //+3
+                $pdf->MultiCell(10,5,'B. ',0,'J',0,0,62,$y+5,true);
+                $pdf->MultiCell(10,5,'C. ',0,'J',0,0,109,$y+5,true);
+                $pdf->MultiCell(10,5,'D. ',0,'J',0,0,156,$y+5,true);
                 // Add the image
                 $pdf->Image($optionA, 23, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
                 $pdf->Image($optionB, 70, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
