@@ -169,7 +169,7 @@ class TestGeneratorController extends Controller
 
                 // Merge all questions into one collection
                 //$questionSet = $prelimQuestions->merge($midtermQuestions)->merge($preFinalQuestions)->merge($finalQuestions);
-                $questionSet = $prelimQuestions->merge($finalQuestions);
+                $questionSet = $prelimQuestions->merge($midtermQuestions)->merge($preFinalQuestions)->merge($finalQuestions);
                 // Generate PDF for the current set
                 $filename = $this->generatePDF($set, $questionSet, $subject_code_name, $department, $request->semester, $request->term);
                 $pdfFiles[] = $filename;
@@ -231,31 +231,148 @@ class TestGeneratorController extends Controller
         foreach ($questionSet as $question) 
         {
             $number++;
+            $pdf->setCellPaddings(2, 2, 2, 2);
+            // if string length is more than pagewithd - padding - margins text should be justified
+            $textOrientation = 'L';
+            $stringLength = strlen($question->question);
+            if(strlen($question->question) > 60)
+            { 
+                $textOrientation = 'J';
+            }
+
+            $pdf->MultiCell(0, 5, $number . '. ' . $question->question, 0, $textOrientation , false);
             
-            $pdf->cell(0, 10,$number . '. ' . $question->question,0,0,'L',false,'');
-            $pdf->ln();
-            if ($question->type == 'text')
+            if ($question->type == 'text') // options
             {
-                $pdf->setCellPaddings(2, 2, 2, 2);
+                
                 $xPos = $pdf->GetX();
                 $pageWidth = $pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'];
-                $cellWidth = ($pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'] - 6 ) / 4; // Width of each cell
+                $cellWidth = ($pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'] - 11 ) / 4; // Width of each cell
                 $cellSpacing = 2; // Space between cells
                 $currentWidth = 0;
-                foreach ($question->options as $option) 
-                {
-                    if ($currentWidth + $cellWidth > $pageWidth) {
-                        // Move to the next line if the width exceeds the page width
-                        $pdf->Ln();
-                        $xPos = $pdf->GetX();
-                        $currentWidth = 0;
+
+                $maxLength = 0;
+
+                // Find the maximum length in the options array
+                foreach ($question->options as $option) {
+                    $optionLength = strlen($option->option);
+                    if ($optionLength > $maxLength) {
+                        $maxLength = $optionLength;
                     }
-                    $pdf->SetX($xPos + $currentWidth +5);
-                    $pdf->MultiCell($cellWidth, 5, $option->option, 0, 'L', 0, 0, '', '', true);
-                    $currentWidth += $cellWidth + $cellSpacing;
+                }
+
+                $oneColumn = false;
+                $twoColumns = false;
+                $fourColumns = false;
+                // Determine the number of columns based on the maximum length
+                if ($maxLength > 26) {
+                    $oneColumn = true;
+                    $twoColumns = false;
+                    $fourColumns = false;
+                } elseif ($maxLength > 13 && $maxLength <= 26) {
+                    $twoColumns = true;
+                    $oneColumn = false;
+                    $fourColumns = false;
+                } else {
+                    $fourColumns = true;
+                    $oneColumn = false;
+                    $twoColumns = false;
+                }
+
+                if($twoColumns)
+                {
+                    $cellWidth = ($pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'] - 11 ) / 2; // Width of each cell
+                }
+
+                if($oneColumn)
+                {
+                    $cellWidth = ($pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'] - 11 );
+                }
+
+                foreach ($question->options as $index => $option) 
+                {
+                    $length = strlen($option->option);
+                    $letter = ['A.','B.','C.','D.'];
+                    if($fourColumns)
+                    {
+                        if ($currentWidth + $cellWidth > $pageWidth) {
+                            // Move to the next line if the width exceeds the page width
+                            $pdf->Ln();
+                            $xPos = $pdf->GetX();
+                            $currentWidth = 0;
+                        }
+    
+                        
+                        $pdf->SetX($xPos + $currentWidth +5);
+                        $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
+                        $currentWidth += $cellWidth + $cellSpacing;
+                    }
+
+                    if($twoColumns)
+                    {
+                        if ($currentWidth + $cellWidth > $pageWidth) {
+                            // Move to the next line if the width exceeds the page width
+                            $pdf->Ln();
+                            $xPos = $pdf->GetX();
+                            $currentWidth = 0;
+                        }
+    
+                        
+                        $pdf->SetX($xPos + $currentWidth +5);
+                        $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
+                        $currentWidth += $cellWidth + $cellSpacing;
+                    }
+
+                    if($oneColumn)
+                    {
+                        if ($currentWidth + $cellWidth > $pageWidth) {
+                            // Move to the next line if the width exceeds the page width
+                            $pdf->Ln();
+                            $xPos = $pdf->GetX();
+                            $currentWidth = 0;
+                        }
+                        
+                        
+                        $pdf->SetX($xPos + $currentWidth +5);
+                        $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
+                        $currentWidth += $cellWidth + $cellSpacing;
+                    }
+                    
                 }
                 $pdf->Ln(); // Move to the next line after options
             }
+
+            if ($question->type == 'image' && isset($question->options)) {
+                // Define parameters for fitting images into boxes
+                $boxWidth = 30;  // Width of the image box
+                $boxHeight = 30; // Height of the image box
+                $margin = 5;     // Margin between boxes
+        
+                // Set initial X and Y positions for images
+                $x = 15;
+                $y = $pdf->GetY() + 10; // Get current Y position after printing the question and add spacing
+        
+                // Loop through each image option
+                foreach ($question->options as $index => $option) {
+                    // Calculate positions for the image box
+                    $boxX = $x + ($boxWidth + $margin) * $index;
+                    $boxY = $y ; // Adjust Y position for image box below the question text
+        
+                    // Draw a rectangle as a box for the image
+                    $pdf->Rect($boxX, $boxY, $boxWidth, $boxHeight, 'D'); // D: Draw border only
+        
+                    // Image file path
+                    $imageFile = public_path('storage/Images/' . $option->option);
+        
+                    // Output the image inside the box
+                    $pdf->Image($imageFile, $boxX, $boxY, $boxWidth, $boxHeight, 'JPEG', '', '', true, 300, '', false, false, 0, 'C', false, false);
+                }
+
+                $pdf->Ln(40); // Adjust as needed for spacing between questions
+            }
+        
+            
+            
         }
 
         $filename = 'exam_' . $set . '_' . time() . '.pdf';
@@ -263,8 +380,6 @@ class TestGeneratorController extends Controller
 
         return $filename;
     }
-
-
 
 
 
@@ -282,7 +397,7 @@ class TestGeneratorController extends Controller
             }
             $zip->close();
         }
-    
+        
         return $zipFilename;
     }
 
