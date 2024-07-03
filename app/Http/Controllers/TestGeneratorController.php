@@ -169,9 +169,12 @@ class TestGeneratorController extends Controller
 
                 // Merge all questions into one collection
                 //$questionSet = $prelimQuestions->merge($midtermQuestions)->merge($preFinalQuestions)->merge($finalQuestions);
-                $questionSet = $prelimQuestions->merge($midtermQuestions)->merge($preFinalQuestions)->merge($finalQuestions);
+                $questionSet = $prelimQuestions->concat($midtermQuestions)->concat($preFinalQuestions)->concat($finalQuestions);
+
+                $shuffledQuestionSet = $questionSet->shuffle();
+               
                 // Generate PDF for the current set
-                $filename = $this->generatePDF($set, $questionSet, $subject_code_name, $department, $request->semester, $request->term);
+                $filename = $this->generatePDF($set, $shuffledQuestionSet, $subject_code_name, $department, $request->semester, $request->term);
                 $pdfFiles[] = $filename;
 
                 // Log successful PDF generation
@@ -322,7 +325,7 @@ class TestGeneratorController extends Controller
                         $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
                         $currentWidth += $cellWidth + $cellSpacing;
                     }
-
+                    // FIX BUG HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                     if($oneColumn)
                     {
                         if ($currentWidth + $cellWidth > $pageWidth) {
@@ -337,41 +340,109 @@ class TestGeneratorController extends Controller
                         $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
                         $currentWidth += $cellWidth + $cellSpacing;
                     }
-                    
+                    // FIX BUG HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 }
                 $pdf->Ln(); // Move to the next line after options
             }
 
-            if ($question->type == 'image' && isset($question->options)) {
-                // Define parameters for fitting images into boxes
-                $boxWidth = 30;  // Width of the image box
-                $boxHeight = 30; // Height of the image box
-                $margin = 5;     // Margin between boxes
-        
-                // Set initial X and Y positions for images
-                $x = 15;
-                $y = $pdf->GetY() + 10; // Get current Y position after printing the question and add spacing
-        
-                // Loop through each image option
-                foreach ($question->options as $index => $option) {
-                    // Calculate positions for the image box
-                    $boxX = $x + ($boxWidth + $margin) * $index;
-                    $boxY = $y ; // Adjust Y position for image box below the question text
-        
-                    // Draw a rectangle as a box for the image
-                    $pdf->Rect($boxX, $boxY, $boxWidth, $boxHeight, 'D'); // D: Draw border only
-        
-                    // Image file path
-                    $imageFile = public_path('storage/Images/' . $option->option);
-        
-                    // Output the image inside the box
-                    $pdf->Image($imageFile, $boxX, $boxY, $boxWidth, $boxHeight, 'JPEG', '', '', true, 300, '', false, false, 0, 'C', false, false);
-                }
+            // Check if current question has image options
+           
+            // if ($question->type == 'image' && isset($question->options)) {
+            //     // Define parameters for fitting images into boxes
+            //     $boxWidth = ($pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'] - 20) / 4;  // Width of the image box
+            //     $boxHeight = 30; // Height of the image box
+            //     $margin = 5;     // Margin between boxes
 
-                $pdf->Ln(40); // Adjust as needed for spacing between questions
-            }
-        
+            //     // Set initial X and Y positions for images
+            //     $x = 15;
+            //     $y = $pdf->GetY() + 5; // Get current Y position after printing the question and add spacing
+
+            //     // Track maximum Y position for images
+            //     $maxY = $y;
+
+            //     // Loop through each image option
+            //     foreach ($question->options as $index => $option) {
+            //         // Calculate positions for the image box
+            //         $boxX = $x + ($boxWidth + $margin) * ($index % 4);
+            //         $boxY = $y + floor($index / 4) * ($boxHeight + $margin); // Adjust Y position for image box below the question text
+
+            //         // Check if image box exceeds current page height
+            //         if ($boxY + $boxHeight > $pdf->getPageHeight() - $pdf->getMargins()['bottom']) {
+            //             // Move Y to next page top
+                        
+            //             $y = 10; // Reset Y position for new page
+            //             $maxY = $y; // Reset max Y position
+            //         }
+
+            //         // Draw a rectangle as a box for the image
+            //         $pdf->Rect($boxX, $boxY, $boxWidth, $boxHeight, 'D'); // D: Draw border only
+
+            //         // Image file path
+            //         $imageFile = public_path('storage/Images/' . $option->option);
+
+            //         // Check if the image file exists
+            //         if (file_exists($imageFile)) {
+            //             // Get image size to maintain aspect ratio
+            //             list($originalWidth, $originalHeight) = getimagesize($imageFile);
+
+            //             // Calculate aspect ratio
+            //             $aspectRatio = $originalWidth / $originalHeight;
+
+            //             // Determine new width and height while maintaining aspect ratio
+            //             if ($boxWidth / $boxHeight > $aspectRatio) {
+            //                 $imageWidth = $boxHeight * $aspectRatio;
+            //                 $imageHeight = $boxHeight;
+            //             } else {
+            //                 $imageWidth = $boxWidth;
+            //                 $imageHeight = $boxWidth / $aspectRatio;
+            //             }
+
+            //             // Center the image in the box
+            //             $centerX = $boxX + ($boxWidth - $imageWidth) / 2;
+            //             $centerY = $boxY + ($boxHeight - $imageHeight) / 2;
+
+            //             // Output the image inside the box
+            //             $pdf->Image($imageFile, $centerX, $centerY, $imageWidth, $imageHeight, '', '', '', true, 300, '', false, false, 0, 'C', false, false);
+            //         } else {
+            //             // If the image file doesn't exist, output a placeholder or error message
+            //             $pdf->Text($boxX + 5, $boxY + ($boxHeight / 2) - 3, 'Image not found');
+            //         }
+
+            //         // Update max Y position
+            //         $maxY = max($maxY, $boxY + $boxHeight);
+            //     }
+
+            //     // Move the Y position for the next question after all images
+            //     $pdf->SetY($maxY + $margin); // Add spacing after the images
+            // }
+                
+            if ($question->type == 'image') {
+                // Get image paths
+                $optionA = public_path('storage/Images/' . $question->options[0]->option);
+                $optionB = public_path('storage/Images/' . $question->options[1]->option);
+                $optionC = public_path('storage/Images/' . $question->options[2]->option);
+                $optionD = public_path('storage/Images/' . $question->options[3]->option);
             
+                $pageWidth = $pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'];
+                $y = $pdf->GetY();
+            
+                // Define the width for each element
+                $textWidth = 10; // Width for the text "A."
+                $imageWidth = 34; // Width for the image
+                $imageHeight = 34;
+                // Add the text "A."
+                $pdf->SetX(10);
+                $pdf->MultiCell(10,5,'A. ',0,'J',0,1,15,$y+5,true); //+3
+                $pdf->MultiCell(10,5,'B. ',0,'J',0,1,62,$y+5,true);
+                $pdf->MultiCell(10,5,'C. ',0,'J',0,1,109,$y+5,true);
+                $pdf->MultiCell(10,5,'D. ',0,'J',0,1,156,$y+5,true);
+                // Add the image
+                $pdf->Image($optionA, 23, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
+                $pdf->Image($optionB, 70, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
+                $pdf->Image($optionC, 117, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
+                $pdf->Image($optionD, 164, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
+                $pdf->ln();
+            }
             
         }
 
