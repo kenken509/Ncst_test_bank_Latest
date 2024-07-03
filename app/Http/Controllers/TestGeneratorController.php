@@ -325,7 +325,7 @@ class TestGeneratorController extends Controller
                         $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
                         $currentWidth += $cellWidth + $cellSpacing;
                     }
-                    // FIX BUG HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                   
                     if($oneColumn)
                     {
                         if ($currentWidth + $cellWidth > $pageWidth) {
@@ -337,10 +337,11 @@ class TestGeneratorController extends Controller
                         
                         
                         $pdf->SetX($xPos + $currentWidth +5);
-                        $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
+                        //$pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
+                        $pdf->Cell($cellWidth,5,$letter[$index].' '.$option->option,0,0,'L',false,'');
                         $currentWidth += $cellWidth + $cellSpacing;
                     }
-                    // FIX BUG HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                    
                 }
                 $pdf->Ln(); // Move to the next line after options
             }
