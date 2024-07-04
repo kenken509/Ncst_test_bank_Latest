@@ -12,6 +12,8 @@ class CustomTCPDF extends TCPDF
     public $selectedSemester;
     public $selectedSchoolYear;
     public $displaySetQuestion;
+    public $subject_description;
+    public $set;
 
     public function Header()
     {
@@ -57,10 +59,10 @@ class CustomTCPDF extends TCPDF
 
             $this->SetY($this->GetY() + 5); 
             $this->SetFont('helvetica', 'B', 12); // Set font to Helvetica, bold, size 10
-            $this->Cell(0, 4, 'CSD DEPARTMENT', 0, 1, 'C');
-            $this->Cell(0, 4, 'Final Exam in ACT106 Web Development 1', 0, 1, 'C');
-            $this->Cell(0, 4, '1st Semester SY:2023-2022', 0, 1, 'C');
-            $this->Cell(0, 4, 'Set A', 0, 1, 'C');
+            $this->Cell(0, 4, $this->selectedDepartment.' Department', 0, 1, 'C');
+            $this->Cell(0, 4, ucFirst($this->selectedTerm).' Exam in '.$this->subject_description, 0, 1, 'C');
+            $this->Cell(0, 4, $this->selectedSemester.' Semester SY:'.$this->selectedSchoolYear, 0, 1, 'C');
+            $this->Cell(0, 4, 'Set '.$this->set, 0, 1, 'C');
 
             $this->SetY($this->GetY() + 5); 
             $left_margin = 10;
@@ -76,6 +78,27 @@ class CustomTCPDF extends TCPDF
         }
     }
    
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-10);
+        // Set font
+        $this->SetFont('helvetica', 'I', 8);
+
+        
+        $this->Line(10, $this->getY(), 200, $this->getY()); // Example of adding a line (xs,ys,xe,ye)
+
+        $left_margin = 10;
+        $right_margin = 10;
+        $this->SetX($left_margin);
+        $this->setCellPadding(1,0,1,1);
+        $cell_width = floor(($this->getPageWidth() - $left_margin - $right_margin) / 2);
+        $this->MultiCell($cell_width, 5, $this->selectedSubjectCode, 0, 'L', 0, 0, '', '', true, 'T', 'M');
+       
+        $this->Cell($cell_width, 5, 'Page '.$this->getAliasNumPage().' of '.$this->getAliasNbPages(), 0, 1, 'R', 0, '', 0, false, 'T', 'M');
+
+        // Page number
+        //$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().' of '.$this->getAliasNbPages(), 0, false, '', 0, '', 0, false, 'T', 'M');
+    }
 
 }
 

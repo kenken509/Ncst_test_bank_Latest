@@ -149,6 +149,7 @@ class TestGeneratorController extends Controller
             // Fetch subject details
             $subject_code_name = $subject_code->name;
             $department = $subject_code->department->name;
+            $subject_description = $subject_code->description;
             if ($subject_code->division) {
                 $department .= ' ' . $subject_code->division->name;
             }
@@ -161,6 +162,7 @@ class TestGeneratorController extends Controller
 
             // Loop through selected exam sets
             foreach ($selectedExamSet as $set) {
+                
                 // Fetch questions for each term and merge them into a single collection
                 $prelimQuestions = Question::where('term', 'prelim')->inRandomOrder()->take($request->prelim_count ?? 0)->get()->unique('id');
                 $midtermQuestions = Question::where('term', 'mid-term')->inRandomOrder()->take($request->mid_term_count ?? 0)->get()->unique('id');
@@ -174,7 +176,7 @@ class TestGeneratorController extends Controller
                 $shuffledQuestionSet = $questionSet->shuffle();
                
                 // Generate PDF for the current set
-                $filename = $this->generatePDF($set, $shuffledQuestionSet, $subject_code_name, $department, $request->semester, $request->term);
+                $filename = $this->generatePDF($set, $shuffledQuestionSet, $subject_code_name, $subject_description, $department, $request->semester, $request->term, $request->school_year);
                 $pdfFiles[] = $filename;
 
                 // Log successful PDF generation
@@ -206,10 +208,19 @@ class TestGeneratorController extends Controller
 
 
 
-    private function generatePDF($set, $questionSet, $subject_code_name, $department, $semester, $term)
+    private function generatePDF($set, $questionSet, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
     {
+
         $user = Auth::user();
         $pdf = new CustomTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        $pdf->selectedDepartment    = $department;
+        $pdf->subject_description   = $subject_description;
+        $pdf->selectedTerm          = $term;
+        $pdf->selectedSubjectCode   = $subject_code_name;
+        $pdf->selectedSemester      = $semester;
+        $pdf->selectedSchoolYear    = $schoolYr;
+        $pdf->set                   = $set;
 
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor($user->role . ' ' . $user->name);
@@ -218,12 +229,13 @@ class TestGeneratorController extends Controller
         $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
 
         $pdf->SetMargins(10, 10, 10, true);
+        //$pdf->SetAutoPageBreak(true, 10); // Sets bottom margin
         $pdf->setPrintHeader(true);
-        $pdf->setPrintFooter(false);
+        $pdf->setPrintFooter(true);
         
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
         $pdf->setFontSubsetting(true);
-        $pdf->SetFont('dejavusans', '', 12);
+        $pdf->SetFont('helvetica', '', 12);
 
         $pdf->AddPage();
 
@@ -305,14 +317,24 @@ class TestGeneratorController extends Controller
                             $currentWidth = 0;
                         }
     
-                        
+                        $pageHeight = $pdf->getPageHeight() - 20;
                         $pdf->SetX($xPos + $currentWidth +5);
+
+                        if(floor($pdf->GetY()+10) >= $pageHeight)
+                        {
+                            $pdf->addPage();
+                            $pdf->setY(11);
+                            $pdf->ln();
+                            $pdf->setX(15);
+                        }
+
                         $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
                         $currentWidth += $cellWidth + $cellSpacing;
                     }
 
                     if($twoColumns)
                     {
+                        
                         if ($currentWidth + $cellWidth > $pageWidth) {
                             // Move to the next line if the width exceeds the page width
                             $pdf->Ln();
@@ -322,6 +344,18 @@ class TestGeneratorController extends Controller
     
                         
                         $pdf->SetX($xPos + $currentWidth +5);
+
+                        $pageHeight = $pdf->getPageHeight() - 20;
+                        
+                       
+                        if(floor($pdf->GetY()+10) >= $pageHeight)
+                        {
+                            $pdf->addPage();
+                            $pdf->setY(11);
+                            $pdf->ln();
+                            $pdf->setX(15);
+                        }
+                        
                         $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
                         $currentWidth += $cellWidth + $cellSpacing;
                     }
@@ -337,8 +371,21 @@ class TestGeneratorController extends Controller
                         
                         
                         $pdf->SetX($xPos + $currentWidth +5);
-                        //$pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
-                        $pdf->Cell($cellWidth,5,$letter[$index].' '.$option->option,0,0,'L',false,'');
+                        
+                        $pageHeight = $pdf->getPageHeight() - 20;
+                        
+                       
+                        if(floor($pdf->GetY()+10) >= $pageHeight)
+                        {
+                            $pdf->addPage();
+                            $pdf->setY(11);
+                            $pdf->ln();
+                            $pdf->setX(15);
+                        }
+                        
+                        $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
+                        //$pdf->Cell($cellWidth,5,$letter[$index].' '.$option->option,1,0,'L',false,'');
+                        //$pdf->MultiCell($cellWidth, 5, $letter[$index] . ' ' . $option->option, 0, 'L', false);
                         $currentWidth += $cellWidth + $cellSpacing;
                     }
                     
