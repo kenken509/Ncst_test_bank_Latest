@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use TCPDF;
+use DateTime;
 use ZipArchive;
+use Carbon\Carbon;
 use App\Pdf\CustomPDF;
 use App\Models\Question;
 use App\Pdf\CustomTCPDF;
@@ -436,8 +438,11 @@ class TestGeneratorController extends Controller
             }
             
         }
+        $date = Carbon::create(2024, 7, 2, 15, 33, 28);
+         
 
-        $filename = 'exam_' . $set . '_' . time() . '.pdf';
+        //$set, $questionSet, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr
+        $filename = $term.'-'.$subject_code_name.'-'.$set. '-' . $date->format('d-m-Y-H-i-s') . '.pdf';
         $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
 
         return $filename;
