@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Pdf\CustomPDF;
 use App\Models\Question;
 use App\Pdf\CustomTCPDF;
+use App\Pdf\AnswerKeyPdf;
 use App\Models\Department;
 use App\Models\SubjectCode;
 use Illuminate\Http\Request;
@@ -176,11 +177,28 @@ class TestGeneratorController extends Controller
                 $questionSet = $prelimQuestions->concat($midtermQuestions)->concat($preFinalQuestions)->concat($finalQuestions);
 
                 $shuffledQuestionSet = $questionSet->shuffle();
-               
+                $shuffledQuestionAnswerKey = [];
+
+                foreach($shuffledQuestionSet as $question)
+                {
+                    foreach($question->options as $index => $option)
+                    {
+                        $optionLetters = ['A','B','C','D'];
+                        if($option->isCorrect == 'true')
+                        {
+                            $shuffledQuestionAnswerKey[] = $optionLetters[$index];
+                        }
+
+                    }
+                }
+
+                
                 // Generate PDF for the current set
                 $filename = $this->generatePDF($set, $shuffledQuestionSet, $subject_code_name, $subject_description, $department, $request->semester, $request->term, $request->school_year);
-                $pdfFiles[] = $filename;
+                $answerKeyFileName = $this->generateAnswerKeyPdf($set, $shuffledQuestionAnswerKey, $subject_code_name, $subject_description, $department, $request->semester, $request->term, $request->school_year);
 
+                $pdfFiles[] = $filename;
+                $pdfFiles[] = $answerKeyFileName;
                 // Log successful PDF generation
                 Log::info("PDF generated for Set: $set, Subject: $subject_code_name");
             }
@@ -447,6 +465,72 @@ class TestGeneratorController extends Controller
 
         return $filename;
     }
+
+    
+    //goods
+    private function generateAnswerKeyPdf($set, $answerKey, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
+    {
+        $user = Auth::user();
+        $pdf = new AnswerKeyPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        $pdf->selectedDepartment    = $department;
+        $pdf->subject_description   = $subject_description;
+        $pdf->selectedTerm          = $term;
+        $pdf->selectedSubjectCode   = $subject_code_name;
+        $pdf->selectedSemester      = $semester;
+        $pdf->selectedSchoolYear    = $schoolYr;
+        $pdf->set                   = $set;
+
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor($user->role . ' ' . $user->name);
+        $pdf->SetTitle($term.' Set '.$set.' Answer Key in ' . $subject_code_name);
+        $pdf->SetSubject('Generated Exam Paper');
+        $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
+
+        $pdf->SetMargins(10, 10, 10, true);
+        $pdf->setPrintHeader(true);
+        $pdf->setPrintFooter(true);
+        
+        $pdf->SetAutoPageBreak(true, 10);
+        $pdf->setFontSubsetting(true);
+        $pdf->SetFont('helvetica', '', 12);
+
+        $pdf->AddPage();
+
+        // Write header information
+        $pdf->SetY(73);
+
+        $pdf->setCellPadding(1.6,1.6,1.6,1.6);
+
+        // Column settings
+        $maxAnswersPerColumn = 3;
+        $numColumns = ceil(count($answerKey) / $maxAnswersPerColumn);
+       
+        $columnWidth = floor($pdf->getPageWidth() - 20) / $numColumns; // Adjust the width based on margins
+        
+        for ($col = 0; $col < $numColumns; $col++) {
+            $pdf->SetY(73);
+            //$pdf->SetX(($col * $columnWidth)+10); // Adjust starting X position for each column
+            
+            for ($i = 0; $i < $maxAnswersPerColumn; $i++) {
+
+                $index = $col * $maxAnswersPerColumn + $i;
+                if ($index >= count($answerKey)) break;
+                $answer = $answerKey[$index];
+                $pdf->SetX(($col * $columnWidth)+10);
+                $pdf->MultiCell($columnWidth - 5, 5, ($index + 1) . '. ' . $answer, 0, 'L', false);
+            }
+            
+        }
+
+        $date = Carbon::create(2024, 7, 2, 15, 33, 28);
+        $filename = $term.'-'.$subject_code_name.'-'.'ANSWER-'.$set.'-' . $date->format('d-m-Y-H-i-s') . '.pdf';
+        $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
+
+        return $filename;
+    }
+
+    
 
 
 
