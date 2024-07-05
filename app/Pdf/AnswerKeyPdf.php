@@ -74,7 +74,7 @@ class AnswerKeyPdf extends TCPDF
             
             $this->Cell(0, 4,'Answer Key', 0, 1, 'C');
 
-            $date = Carbon::create(2024, 7, 2, 15, 33, 28);
+            $date = Carbon::now();
             $this->SetFont('helvetica', 'N', 8);
             $this->Cell(0, 4,$date->format('d/m/Y H-i-s'), 0, 1, 'C');
             // Add the image
@@ -100,7 +100,7 @@ class AnswerKeyPdf extends TCPDF
         $this->setCellPadding(1,0,1,1);
         $cell_width = floor(($this->getPageWidth() - $left_margin - $right_margin) / 2);
         $this->MultiCell($cell_width, 5, $this->selectedSubjectCode, 0, 'L', 0, 0, '', '', true, 'T', 'M');
-       
+        
         $this->Cell($cell_width, 5, 'Page '.$this->getAliasNumPage().' of '.$this->getAliasNbPages(), 0, 1, 'R', 0, '', 0, false, 'T', 'M');
 
         // Page number

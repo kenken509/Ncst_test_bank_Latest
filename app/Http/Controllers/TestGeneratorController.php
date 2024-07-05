@@ -456,7 +456,7 @@ class TestGeneratorController extends Controller
             }
             
         }
-        $date = Carbon::create(2024, 7, 2, 15, 33, 28);
+        $date = Carbon::now();
          
 
         //$set, $questionSet, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr
@@ -468,78 +468,35 @@ class TestGeneratorController extends Controller
 
     
     //goods
-    // private function generateAnswerKeyPdf($set, $answerKey, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
-    // {
-    //     $answerKey = ['C', 'A', 'A', 'A', 'D', 'A', 'C', 'B', 'A', 'C', 'B', 'A', 'B', 'D', 'C', 'D', 'B', 'B', 'D', 'B', 'B', 'B', 'C', 'D', 'D', 'B', 'A', 'C', 'C', 'A', 'B', 'C', 'D', 'B', 'A', 'C', 'C', 'D', 'C', 'D', 'A', 'A', 'A', 'D', 'C', 'B', 'B', 'B', 'C', 'D', 'D', 'C', 'C', 'B', 'C', 'A', 'D', 'C', 'D', 'D', 'B', 'A', 'B', 'D', 'A', 'B', 'B', 'A', 'D', 'A', 'D', 'C', 'A', 'D', 'C', 'D', 'D', 'D', 'C', 'B', 'C', 'D', 'D', 'C', 'B', 'C', 'B', 'C', 'D', 'D', 'B', 'D', 'B', 'A', 'A', 'C', 'B', 'B', 'B', 'B', 'A', 'D', 'A', 'C', 'C', 'C', 'A', 'C', 'D', 'A', 'B', 'B', 'A', 'D', 'B', 'A', 'C', 'C', 'C', 'D', 'A', 'B', 'D', 'B', 'A', 'B', 'C', 'D', 'B', 'B', 'D', 'B', 'A', 'B', 'A', 'D', 'D', 'C', 'C', 'D', 'B', 'B', 'D', 'B', 'A', 'A', 'D', 'D', 'D', 'B', 'A', 'B', 'D', 'A', 'D', 'C', 'A', 'C', 'D', 'A', 'B', 'B', 'A', 'A', 'A', 'A', 'C', 'A', 'A', 'B', 'C', 'A', 'B', 'A', 'A', 'D', 'B', 'D', 'A', 'B', 'B', 'D', 'B', 'B', 'D', 'B', 'A', 'D', 'C', 'A', 'B', 'C', 'D', 'D', 'C', 'C', 'D', 'B', 'A', 'C', 'B', 'B', 'A', 'B', 'B', 'A', 'B', 'C', 'D', 'C', 'C', 'A', 'D', 'B', 'D', 'A', 'C', 'C', 'A', 'C', 'A', 'C', 'B', 'C', 'C', 'C', 'D', 'C', 'B', 'B', 'B', 'A', 'A', 'A', 'D', 'C', 'D', 'B', 'C', 'D', 'B', 'D', 'D', 'D', 'D', 'D', 'B', 'D', 'D', 'C', 'B', 'B', 'A', 'B', 'D', 'B', 'B', 'D', 'C', 'C', 'C', 'C', 'A', 'D', 'C', 'C', 'A', 'A', 'C', 'C', 'B', 'C', 'D', 'D', 'D', 'C', 'D', 'D', 'D', 'B', 'C', 'C', 'B', 'A', 'C', 'B', 'C', 'C', 'B', 'B', 'C', 'D', 'C', 'B', 'D', 'B', 'D', 'C', 'A', 'B'];
-    //     $user = Auth::user();
-    //     $pdf = new AnswerKeyPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-    //     $pdf->selectedDepartment    = $department;
-    //     $pdf->subject_description   = $subject_description;
-    //     $pdf->selectedTerm          = $term;
-    //     $pdf->selectedSubjectCode   = $subject_code_name;
-    //     $pdf->selectedSemester      = $semester;
-    //     $pdf->selectedSchoolYear    = $schoolYr;
-    //     $pdf->set                   = $set;
-
-    //     $pdf->SetCreator(PDF_CREATOR);
-    //     $pdf->SetAuthor($user->role . ' ' . $user->name);
-    //     $pdf->SetTitle($term.' Set '.$set.' Answer Key in ' . $subject_code_name);
-    //     $pdf->SetSubject('Generated Exam Paper');
-    //     $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
-
-    //     $pdf->SetMargins(10, 10, 10, true);
-    //     $pdf->setPrintHeader(true);
-    //     $pdf->setPrintFooter(true);
-        
-    //     $pdf->SetAutoPageBreak(true, 10);
-    //     $pdf->setFontSubsetting(true);
-    //     $pdf->SetFont('helvetica', '', 12);
-
-    //     $pdf->AddPage();
-
-    //     // Write header information
-    //     $pdf->SetY(73);
-
-    //     $pdf->setCellPadding(1.6,1.6,1.6,1.6);
-
-    //     // Column settings
-    //     $maxAnswersPerColumn = 25;
-    //     $numColumns = ceil(count($answerKey) / $maxAnswersPerColumn);
-
-       
-    //     $columnWidth = floor($pdf->getPageWidth() - 20) / $numColumns; // Adjust the width based on margins
-        
-       
-        
-    //     for ($col = 0; $col < $numColumns; $col++) {
-    //         $pdf->SetY(73);
-    //         //$pdf->SetX(($col * $columnWidth)+10); // Adjust starting X position for each column
-            
-    //         for ($i = 0; $i < $maxAnswersPerColumn; $i++) {
-
-    //             $index = $col * $maxAnswersPerColumn + $i;
-    //             if ($index >= count($answerKey)) break;
-    //             $answer = $answerKey[$index];
-    //             $pdf->SetX(($col * $columnWidth)+10);
-    //             $pdf->MultiCell($columnWidth - 5, 5, ($index + 1) . '. ' . $answer, 0, 'L', false);
-    //         }
-            
-    //     }
-
-    //     $date = Carbon::create(2024, 7, 2, 15, 33, 28);
-    //     $filename = $term.'-'.$subject_code_name.'-'.'ANSWER-'.$set.'-' . $date->format('d-m-Y-H-i-s') . '.pdf';
-    //     $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
-
-    //     return $filename;
-    // }
-
     private function generateAnswerKeyPdf($set, $answerKey, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
     {
-        $answerKey = ['C', 'A', 'A', 'A', 'D', 'A', 'C', 'B', 'A', 'C', 'B', 'A', 'B', 'D', 'C', 'D', 'B', 'B', 'D', 'B', 'B', 'B', 'C', 'D', 'D', 'B', 'A', 'C', 'C', 'A', 'B', 'C', 'D', 'B', 'A', 'C', 'C', 'D', 'C', 'D', 'A', 'A', 'A', 'D', 'C', 'B', 'B', 'B', 'C', 'D', 'D', 'C', 'C', 'B', 'C', 'A', 'D', 'C', 'D', 'D', 'B', 'A', 'B', 'D', 'A', 'B', 'B', 'A', 'D', 'A', 'D', 'C', 'A', 'D', 'C', 'D', 'D', 'D', 'C', 'B', 'C', 'D', 'D', 'C', 'B', 'C', 'B', 'C', 'D', 'D', 'B', 'D', 'B', 'A', 'A', 'C', 'B', 'B', 'B', 'B', 'A', 'D', 'A', 'C', 'C', 'C', 'A', 'C', 'D', 'A', 'B', 'B', 'A', 'D', 'B', 'A', 'C', 'C', 'C', 'D', 'A', 'B', 'D', 'B', 'A', 'B', 'C', 'D', 'B', 'B', 'D', 'B', 'A', 'B', 'A', 'D', 'D', 'C', 'C', 'D', 'B', 'B', 'D', 'B', 'A', 'A', 'D', 'D', 'D', 'B', 'A', 'B', 'D', 'A', 'D', 'C', 'A', 'C', 'D', 'A', 'B', 'B', 'A', 'A', 'A', 'A', 'C', 'A', 'A', 'B', 'C', 'A', 'B', 'A', 'A', 'D', 'B', 'D', 'A', 'B', 'B', 'D', 'B', 'B', 'D', 'B', 'A', 'D', 'C', 'A', 'B', 'C', 'D', 'D', 'C', 'C', 'D', 'B', 'A', 'C', 'B', 'B', 'A', 'B', 'B', 'A', 'B', 'C', 'D', 'C', 'C', 'A', 'D', 'B', 'D', 'A', 'C', 'C', 'A', 'C', 'A', 'C', 'B', 'C', 'C', 'C', 'D', 'C', 'B', 'B', 'B', 'A', 'A', 'A', 'D', 'C', 'D', 'B', 'C', 'D', 'B', 'D', 'D', 'D', 'D', 'D', 'B', 'D', 'D', 'C', 'B', 'B', 'A', 'B', 'D', 'B', 'B', 'D', 'C', 'C', 'C', 'C', 'A', 'D', 'C', 'C', 'A', 'A', 'C', 'C', 'B', 'C', 'D', 'D', 'D', 'C', 'D', 'D', 'D', 'B', 'C', 'C', 'B', 'A', 'C', 'B', 'C', 'C', 'B', 'B', 'C', 'D', 'C', 'B', 'D', 'B', 'D', 'C', 'A', 'B'];
+        //$answerKey = ['C', 'A', 'A', 'A', 'D', 'A', 'C', 'B', 'A', 'C', 'B', 'A', 'B', 'D', 'C', 'D', 'B', 'B', 'D', 'B', 'B', 'B', 'C', 'D', 'D', 'B', 'A', 'C', 'C', 'A', 'B', 'C', 'D', 'B', 'A', 'C', 'C', 'D', 'C', 'D', 'A', 'A', 'A', 'D', 'C', 'B', 'B', 'B', 'C', 'D', 'D', 'C', 'C', 'B', 'C', 'A', 'D', 'C', 'D', 'D', 'B', 'A', 'B', 'D', 'A', 'B', 'B', 'A', 'D', 'A', 'D', 'C', 'A', 'D', 'C', 'D', 'D', 'D', 'C', 'B', 'C', 'D', 'D', 'C', 'B', 'C', 'B', 'C', 'D', 'D', 'B', 'D', 'B', 'A', 'A', 'C', 'B', 'B', 'B', 'B', 'A', 'D', 'A', 'C', 'C', 'C', 'A', 'C', 'D', 'A', 'B', 'B', 'A', 'D', 'B', 'A', 'C', 'C', 'C', 'D', 'A', 'B', 'D', 'B', 'A', 'B', 'C', 'D', 'B', 'B', 'D', 'B', 'A', 'B', 'A', 'D', 'D', 'C', 'C', 'D', 'B', 'B', 'D', 'B', 'A', 'A', 'D', 'D', 'D', 'B', 'A', 'B', 'D', 'A', 'D', 'C', 'A', 'C', 'D', 'A', 'B', 'B', 'A', 'A', 'A', 'A', 'C', 'A', 'A', 'B', 'C', 'A', 'B', 'A', 'A', 'D', 'B', 'D', 'A', 'B', 'B', 'D', 'B', 'B', 'D', 'B', 'A', 'D', 'C', 'A', 'B', 'C', 'D', 'D', 'C', 'C', 'D', 'B', 'A', 'C', 'B', 'B', 'A', 'B', 'B', 'A', 'B', 'C', 'D', 'C', 'C', 'A', 'D', 'B', 'D', 'A', 'C', 'C', 'A', 'C', 'A', 'C', 'B', 'C', 'C', 'C', 'D', 'C', 'B', 'B', 'B', 'A', 'A', 'A', 'D', 'C', 'D', 'B', 'C', 'D', 'B', 'D', 'D', 'D', 'D', 'D', 'B', 'D', 'D', 'C', 'B', 'B', 'A', 'B', 'D', 'B', 'B', 'D', 'C', 'C', 'C', 'C', 'A', 'D', 'C', 'C', 'A', 'A', 'C', 'C', 'B', 'C', 'D', 'D', 'D', 'C', 'D', 'D', 'D', 'B', 'C', 'C', 'B', 'A', 'C', 'B', 'C', 'C', 'B', 'B', 'C', 'D', 'C', 'B', 'D', 'B', 'D', 'C', 'A', 'B'];
+        // $answerKey = [
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
+        // ];
         $user = Auth::user();
         $pdf = new AnswerKeyPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-    
+
         $pdf->selectedDepartment    = $department;
         $pdf->subject_description   = $subject_description;
         $pdf->selectedTerm          = $term;
@@ -547,13 +504,13 @@ class TestGeneratorController extends Controller
         $pdf->selectedSemester      = $semester;
         $pdf->selectedSchoolYear    = $schoolYr;
         $pdf->set                   = $set;
-    
+
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor($user->role . ' ' . $user->name);
-        $pdf->SetTitle($term . ' Set ' . $set . ' Answer Key in ' . $subject_code_name);
+        $pdf->SetTitle($term.' Set '.$set.' Answer Key in ' . $subject_code_name);
         $pdf->SetSubject('Generated Exam Paper');
         $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
-    
+
         $pdf->SetMargins(10, 10, 10, true);
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
@@ -561,53 +518,102 @@ class TestGeneratorController extends Controller
         $pdf->SetAutoPageBreak(true, 10);
         $pdf->setFontSubsetting(true);
         $pdf->SetFont('helvetica', '', 12);
-    
+
         $pdf->AddPage();
-    
+
         // Write header information
         $pdf->SetY(73);
-    
-        $pdf->setCellPadding(1.6, 1.6, 1.6, 1.6);
-    
-        // Column settings
-        $maxAnswersPerColumn = 30;
-        $maxColumnsPerPage = 8;
-        $currentColumn = 0;
-        $columnWidth = ($pdf->getPageWidth() - 20) / $maxColumnsPerPage; // Adjust the width based on margins
-    
-        for ($col = 0; $col < ceil(count($answerKey) / $maxAnswersPerColumn); $col++) {
-           
-    
-            // Reset the Y coordinate for the new column
-            $pdf->SetY(73);
 
-            if ($currentColumn >= $maxColumnsPerPage) {
-                $pdf->AddPage();
-                $currentColumn = 0;
-                $pdf->SetY(10); // Reset Y for the new page
-            }
-    
-            // Set the X coordinate for the current column
-            $pdf->SetX(($currentColumn * $columnWidth) + 10);
-    
-            for ($i = 0; $i < $maxAnswersPerColumn; $i++) {
-                $index = $col * $maxAnswersPerColumn + $i;
-                if ($index >= count($answerKey)) break;
-                $answer = $answerKey[$index];
-    
-                // Write the answer in the current column
-                $pdf->MultiCell($columnWidth - 5, 5, ($index + 1) . '. ' . $answer, 0, 'L', false);
-            }
-    
-            $currentColumn++;
+        $pdf->setCellPadding(1.6,1.6,1.6,1.6);
+
+        // Column settings
+        $maxAnswersPerColumn = 25;
+        $maxNumberOfColumns = 8;
+        $numColumns = ceil(count($answerKey) / $maxAnswersPerColumn);
+
+        $currentColumn = 0;
+        if(floor($numColumns) > 8)
+        {
+            $columnWidth = floor($pdf->getPageWidth() - 20) / $maxNumberOfColumns; // Adjust the width based on margins
         }
-    
-        $date = Carbon::create(2024, 7, 2, 15, 33, 28);
-        $filename = $term . '-' . $subject_code_name . '-' . 'ANSWER-' . $set . '-' . $date->format('d-m-Y-H-i-s') . '.pdf';
+        else
+        {   
+            $columnWidth = floor($pdf->getPageWidth() - 20) / $numColumns; // Adjust the width based on margins
+        }
+        
+        
+        for($currentColumn ; $currentColumn < $numColumns; $currentColumn++)
+        {
+            $startingIndex = $currentColumn*$maxAnswersPerColumn;
+            $endingIndex = $maxAnswersPerColumn;
+
+            if($currentColumn < 8)
+            {
+                $pdf->SetY(73);
+
+                // Create the new array based on the specified range
+                $newArray = array_slice($answerKey, $startingIndex, $endingIndex);
+                
+                foreach($newArray as $index => $answer)
+                {
+                    $pdf->SetX(($currentColumn*$columnWidth)+10);
+                    $pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer, 0, 'L', false);
+                }
+            }
+
+            // needs update ******
+            // $multiplier = 1;
+            // $layer = 8;
+
+            // if($currentColumn >= 8 && $currentColumn % 8 == 0)
+            // {
+                
+            //     $layer = $layer * $multiplier;
+            //     $pdf->addPage();
+            //     $pdf->SetY(10);                
+                
+            //     $multiplier++;
+            // }
+
+            // if($currentColumn >= 8)
+            // {
+                
+            //     $newArray = array_slice($answerKey, $startingIndex+7, 32);
+
+                
+            //     foreach($newArray as $index => $answer)
+            //     {
+            //         $pdf->SetX((($currentColumn-$layer)*$columnWidth)+10);
+            //         $pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer, 1, 'L', false);
+            //     }
+            
+            // }
+   
+        }   
+        
+        
+        // for ($col = 0; $col < $numColumns; $col++) {
+        //     $pdf->SetY(73);
+        //     //$pdf->SetX(($col * $columnWidth)+10); // Adjust starting X position for each column
+            
+        //     for ($i = 0; $i < $maxAnswersPerColumn; $i++) {
+
+        //         $index = $col * $maxAnswersPerColumn + $i;
+        //         if ($index >= count($answerKey)) break;
+        //         $answer = $answerKey[$index];
+        //         $pdf->SetX(($col * $columnWidth)+10);
+        //         $pdf->MultiCell($columnWidth - 5, 5, ($index + 1) . '. ' . $answer, 0, 'L', false);
+        //     }
+            
+        // }
+
+        $date = Carbon::now();
+        $filename = $term.'-'.$subject_code_name.'-'.'ANSWER-'.$set.'-' . $date->format('d-m-Y-H-i-s') . '.pdf';
         $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
-    
+
         return $filename;
     }
+
     
 
 
