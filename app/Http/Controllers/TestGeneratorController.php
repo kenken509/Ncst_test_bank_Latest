@@ -210,7 +210,7 @@ class TestGeneratorController extends Controller
                     'keywords'       => '',
                     'category'       => '',
                     'manager'        => '',
-                    'company'        => 'National College of Science and Technology',
+                    'company'        => 'National College of Science and Technology',  
                 ];
                 $excelFileName = ucFirst($request->term).'-'.$subject_code_name.'-ANSWER-'.$set.'-'.$date->format('d-m-Y-H-i-s').'.csv';      //final-ACT106-ANSWER-A-02_07_2024 15.33.28.csv
                 $filePath = 'Pdfs/' . $excelFileName;
@@ -224,7 +224,7 @@ class TestGeneratorController extends Controller
             }
 
             // Create and save the zip file
-            $zipFilename = $this->createZip($pdfFiles);
+            $zipFilename = $this->createZip($pdfFiles, $subject_code_name, $request->term);
             $zipFilePath = storage_path('app/public/pdfs/' . $zipFilename);
 
             // Ensure zip file exists
@@ -233,6 +233,7 @@ class TestGeneratorController extends Controller
                 return response()->json(['error' => 'Zip file not found'], 404);
             }
 
+            //throw new \Exception('simulated error ');
             // Log successful zip creation
             Log::info("Zip file created: $zipFilename");
 
@@ -242,7 +243,7 @@ class TestGeneratorController extends Controller
         } catch (\Exception $e) {
             // Log any exceptions that occur
             Log::error('Exception occurred while generating exam: ' . $e->getMessage());
-            throw $e;
+            return redirect()->back()->with('error','Error: '.$e->getMessage().'.'.Carbon::now());
         }
     }
 
@@ -643,10 +644,11 @@ class TestGeneratorController extends Controller
 
 
 
-    private function createZip($files)
+    private function createZip($files , $subject_code, $term)
     {
         $zip = new ZipArchive;
-        $zipFilename = 'exams_' . time() . '.zip';
+        $date = Carbon::now();
+        $zipFilename = ucFirst($term).'_Exam_'.$subject_code.'_'. $date->format('d-m-Y-H-i-s') . '.zip';
     
         if ($zip->open(storage_path('app/public/pdfs/' . $zipFilename), ZipArchive::CREATE) === TRUE) {
             foreach ($files as $file) {

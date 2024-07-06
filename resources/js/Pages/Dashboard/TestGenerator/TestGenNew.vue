@@ -1,9 +1,10 @@
 <template>
     <DashboardLayout>
-        <Dialog v-model:visible="customModalOpen" modal  :style="{ width: '60rem' }">
+        <Dialog v-model:visible="customModalOpen" modal  :style="{ width: '60rem' }" class="relative">
+            <ProgressSpinner v-if="isLoading" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"  />
             <ModalHeader title="Test Generator">
-          
-                <form @submit.prevent="handlePreviewButtonClicked"> 
+                <form @submit.prevent="handlePreviewButtonClicked" > 
+                    
                     <div class="w-full">
                         <div class="flex w-full pr-4 gap-2 flex-col  md:items-center md:flex-row py-2 ">
                             <label for="department" class="text-black font-semibold w-full max-w-[150px]">Department: </label>
@@ -14,7 +15,7 @@
                                 </option>
                             </select>
                         </div>
-                       
+                        
                         <div class="flex w-full pr-4 gap-2 flex-col py-2 md:items-center md:flex-row">
                             <label for="subject_codes" class="text-black font-semibold w-full max-w-[150px]">Subject Code: </label>
                             <select id="subject_codes" v-model="selectedSubjectCode" class="rounded-md w-full text-xs" >
@@ -145,8 +146,8 @@
                         <hr class="border border-gray-300">
                     </div>
                     <div class="flex flex-col  w-full mt-5 ">
-                        <button @click="handleResetButtonClicked" type="button" class="w-full btn-primary py-2 px-4 m-2 border shadow-md "  >Reset</button>
-                        <button @click="saveExam"  type="button" class="w-full btn-primary py-2 px-4 m-2 border shadow-md " >Generate</button>
+                        <button @click="handleResetButtonClicked" type="button" class="w-full btn-primary py-2 px-4 m-2 border shadow-md disabled:bg-gray-500"  :disabled="isLoading" >Reset</button>
+                        <button @click="saveExam"  type="button" class="w-full btn-primary py-2 px-4 m-2 border shadow-md disabled:bg-gray-500" :disabled="isLoading" >Generate</button>
                         <!-- <button @click="handleSave" type="button" class="w-full btn-primary py-2 px-4 m-2 border shadow-md " >Cancel</button> -->
                         <!-- <button @click="saveAnswerKeysToPDF(testAnswers)" type="button" class="w-full btn-primary py-2 px-4 m-2 border shadow-md " >TEST BUTTON</button> -->
                     </div>
@@ -155,109 +156,13 @@
                 <!-- test answers:{{ testAnswer }} -->
             </ModalHeader>
         </Dialog>
-        <div>
-            <hr class="border border-2 border-black w-full max-w-[8.5in] max-h-[llin] mb-8 mt-2" />
+        <div class="flex items-center justify-between border-bot-only py-2 mb-4">
+            <span class="text-[20px] font-bold text-gray-500">Test Generator </span> 
+        </div>
+        <div v-if="$page.props.flash.error">
+            {{ flashErrorMessage($page.props.flash.error)  }} 
         </div>
         
-        <!--save question set--> 
-        <div  id="pdf-convert" class="w-full py-2 ">
-            <!--heading-->
-            <div class="flex justify-center gap-2 w-full  relative ">
-                <div class="flex justify-between gap-4 ">
-                    <div class=" w-20 h-20 mt-[18px] absolute z-50 top-0 left-[30px]">
-                        <img :src="logoUrl" alt="Ncst Logo"/>
-                    </div>
-                    <div class="flex flex-col justify-center items-center mb-2 mt-1 ">
-                        <span class="font-bold text-[18px]">NATIONAL COLLEGE OF SCIENCE AND TECHNOLOGY</span>
-                        <span>Amafel Building Aguinaldo Highway, Dasmariñas, Cavite</span>
-                        <span>Tel. no. (1234-1234) </span>
-                        <a href="https://ncst.edu.ph/" target="_blank">www.ncst.edu.ph</a>
-                        
-                        <span v-if="selectedDepartment.division_id"  class="text-[16px] font-bold mt-2"  >
-                            {{ getDivisionName(selectedDepartment.id,selectedDepartment.division_id) }} Department
-                        </span>
-                        <span v-else class="text-[16px] font-bold mt-2"  >{{ selectedDepartment.name }} Department</span>
-                        <span class="text-[16px] font-bold">{{ convertTerm(selectedTerm) }} Exam in {{ selectedSubjectCode.name }} {{ selectedSubjectCode.description }} </span>
-                        <span class="text-[16px] font-bold" >{{ selectedSemester }} Semester SY: {{ selectedSchoolYear }} </span>
-                        <span class="text-[16px] font-bold" >Set {{ displaySetQuestion }}</span>
-                        
-                    </div>
-                </div> 
-            </div>
-            <!--heading-->
-            <div class="mt-4 py-2 ">
-                <span class="font-bold text-[16px]">{{ direction }}</span>
-            </div>
-            <!--questions-->
-            <div class="w-full flex flex-wrap whitespace-nowrap flex-col py-2    " v-for="(question,index) in questionSetPdf" :key="question.id"><!-- andito ako 1-->
-                <div class="txt-break">
-                    <span class="text-[12px] py-2 text-break ">{{index+1}}. {{ question.question }}</span>
-                </div>
-                
-                <!--options-->
-                <div v-if="question.type === 'text'" class="flex flex-row whitespace-nowrap gap-3 w-full pl-4 mt-2  " :class="{'flex-col':question.options.some(option => option.option.length > 30)}">
-                    
-                    <template v-for="(option,index) in question.options" class="">
-                        <span class="flex w-full text-[12px] py-2 txt-break">{{ optionLetters[index] }}. {{ option.option }}</span>
-                    </template>
-                </div>
-                
-                <div v-if="question.type === 'image'" class="flex flex-row w-full bg-gren-300 ml-2 mt-2  p-2  ">
-                    <template v-for="(option,index) in question.options" class="w-full flex flex-row bg-green-300  " >  
-                        <div class="w-full flex  gap-2 pb-2 img-break  ">
-                            <span class="text-[12px]">{{ optionLetters[index] }}. </span>                
-                            <img :src="imageUrl+option.option" alt="image option" class="max-w-[1.5in] max-h-[1.5in] rounded-md border border-black img-break"/>   
-                        </div>                    
-                    </template>
-                </div>
-                 <!--options-->   
-            </div>
-            <!--questions-->
-            <div v-if="problemSet.length" class="mt-4 py-4">
-                <span v-html="formatText(problemSet[0].content)" class="font-bold text-[12px]"></span>
-                 <!--andito ako 3-->
-            </div>
-        </div>
-        <div>
-            <hr class="border border-2 border-black w-full max-w-[8.5in] max-h-[llin] my-8" />
-        </div>
-
-        <!--save answer keys to pdf-->
-        <div  id="answers-pdf" class="w-full max-w-[8.5in] max-h-[llin]">
-            <!-- Heading -->
-            <div class="flex justify-center gap-2 w-full pb-2">
-            <div class="flex justify-between gap-4">
-                <div class="w-20 h-20 mt-[18px]">
-                <img :src="logoUrl" alt="Ncst Logo"/>
-                </div>
-                <div class="flex flex-col justify-center items-center mb-2 mt-1">
-                <span class="font-bold text-[18px]">NATIONAL COLLEGE OF SCIENCE AND TECHNOLOGY</span>
-                <span>Amafel Building Aguinaldo Highway, Dasmariñas, Cavite</span>
-                <span>Tel. no. (1234-1234)</span>
-                <a href="https://ncst.edu.ph/" target="_blank">www.ncst.edu.ph</a>
-                <span v-if="selectedDepartment.division_id"  class="text-[14px] font-bold mt-2"  >
-                    {{ getDivisionName(selectedDepartment.id,selectedDepartment.division_id) }} Department
-                </span>
-                <span v-else class="text-[14px] font-bold mt-2"  >{{ selectedDepartment.name }} Department</span>
-                <span class="text-[14px] font-bold">{{ convertTerm(selectedTerm) }} Exam in {{ selectedSubjectCode.name }} {{ selectedSubjectCode.description }} </span>
-                <span class="text-[14px] font-bold">{{ selectedSemester }} Semester SY: {{ selectedSchoolYear }}</span>
-                <span class="text-[14px] font-bold mt-2">Set {{ displaySetAnswer }}</span>
-                <span class="text-[14px] font-bold">Answer Key</span>
-                <span class="text-[12px] ">{{ answerKeyDateFormat() }}</span>
-                </div>
-            </div> 
-            </div>
-            <!-- Grid -->
-            <div class="grid pb-2" :class="`grid-cols-${state.columns}`" :style="{ gridTemplateColumns: `repeat(${state.columns}, minmax(0, 1fr))` }">
-                <div v-for="(chunk, colIndex) in state.chunksToShow" :key="colIndex" class="col-span-1 flex flex-col justify-center">
-                    <div v-for="(ans, index) in chunk" :key="index">
-                        <span>{{ index + 1 + colIndex * maxChunkSize }}. {{ ans }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- save answer keys to pdf-->
     </DashboardLayout>
 </template>
 
@@ -305,11 +210,7 @@ const form = useForm({
 const saveDataContent = ref('');
 
 
-const openPreviewInNewTab = () => {
-    const data = encodeURIComponent(saveDataContent.value);
-    const url = `/preview?data=${data}`;
-    window.open(url, '_blank');
-};
+
 
 //
 const selectedDepartment = ref('');
@@ -1103,15 +1004,6 @@ const testQuestion = [
 
 ]
 
-const testAnswers = [
-    'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b',
-    'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b',
-    'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b',
-    'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b',
-    'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b',
-    'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b', 'a', 'b', 'c', 'd', 'd', 'b', 'c', 'd', 'a', 'a', 'b', 'b',
-
-]
 function getCorrectAnswer(questions){
     let answers = []
     const letter = ['a','b','c','d']
@@ -1217,56 +1109,9 @@ function processAnswers(answers)
   state.chunksToShow = chunks.slice(0, Math.ceil(maxElementsPerColumn / maxChunkSize));
 }
 
-// Method to download PDF
-const saveAnswerKeysToPDF = (keyToCorrection,filename) => {
-  
-  try {
-    // Process the answers to update the state
-   
-    state.chunksToShow = []
-    processAnswers(keyToCorrection);
 
-    const element = document.getElementById('answers-pdf');
-    html2pdf().set({
-            margin:       [0.1,0.4,0.2,0.4],
-            filename:     filename,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-        }).from(element).save()
-      .then(() => {
-        
-        state.downloadStatus = 'success';
-        state.downloadMessage = 'PDF downloaded successfully!';
-      })
-      .catch((error) => {
-        
-        state.downloadStatus = 'error';
-        state.downloadMessage = `Error downloading PDF: ${error.message}`;
-      });
-  } catch (error) {
-    
-    state.downloadStatus = 'error';
-    state.downloadMessage = `Error processing answers: ${error.message}`;
-  }
-};
 
-function answerKeyDateFormat() {
-    const date = new Date();
-    
-    // Extract components
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    
-    // Construct the formatted date string
-    const formattedDate = `${day}/${month}/${year} ${hours}.${minutes}.${seconds}`;
-    
-    return formattedDate;
-}
+
 
 function questionSetDateFormat() {
     const date = new Date();
@@ -1316,94 +1161,17 @@ async function downloadAnswerKeysPDF(set)
     } 
 }
 
-async function downloadQuestionairePDF(set)
-{
-    
-    let selectedSet = set.split('')
-    let dateFormat = questionSetDateFormat()
-    let term    = convertTerm(selectedTerm.value).toString()
-    let code    = selectedSubjectCode.value.name.toString()
-    
-    let name = term+'-'+code
-    
-    for (const set of selectedSet) {
-        switch (set) {
-        case 'A':
-            displaySetQuestion.value = set
-            await saveQuestionareToPDF(setA.value, name+'-'+set+'-'+dateFormat);
-            break;
-        case 'B':
-            displaySetQuestion.value = set
-            await saveQuestionareToPDF(setB.value, name+'-'+set+'-'+dateFormat);
-            break;
-        case 'C':
-            displaySetQuestion.value = set
-            await saveQuestionareToPDF(setC.value, name+'-'+set+'-'+dateFormat);
-            break;
-        }
-    } 
-}
 
-function saveQuestionareToPDF(questions,filename)
-{
-    
-    questionSetPdf.value = questions
-    const element = document.getElementById('pdf-convert'); // Replace 'pdf-content' with the ID of the content you want to convert to PDF
-    const opt = {
-        margin: [0.4, 0.5, 0.7, 0.4], // [top, left, bottom, right].
-        filename:     filename+'.pdf',
-        image:        { type: 'jpeg', quality: 0.98 }, //andito ako 33
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }, // 'letter', 'a4', 'legal' or [width, height] for custom size
-        pagebreak: { mode: ['avoid-all'] },
-    };
 
-    // Function to add footers to each page
-    function addFooters(pdf) {
-        const pageCount = pdf.internal.getNumberOfPages();
-        const currentDate = new Date().toLocaleDateString();
-        pdf.setFontSize(8); // Set font size to 10px
 
-        for (let i = 1; i <= pageCount; i++) {
-            pdf.setPage(i);
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
 
-            // Draw a line at the bottom of the page
-            // Draw a thinner line at the bottom of the page
-            pdf.setLineWidth(0.01); // Set line width to the smallest visible value
-            pdf.line(0.5, pageHeight - 0.6, pageWidth - 0.5, pageHeight - 0.6);
-
-            // Adding current date on the left
-            pdf.text(currentDate, 0.5, pageHeight - 0.4);
-
-            // Calculate the width of the text
-            const pageText = `Page ${i} of ${pageCount}`;
-            const textWidth = pdf.getTextDimensions(pageText).w;
-
-            // Adding page number on the right
-            pdf.text(pageText, pageWidth - textWidth - 0.5, pageHeight - 0.4);
-        }
-    }
-
-    // Generate the PDF
-    html2pdf().from(document.getElementById('pdf-convert')).set(opt).toPdf().get('pdf').then((pdf) => {
-        addFooters(pdf);
-    }).save().then(() => {
-        
-        console.log('PDF saved successfully.');
-    }).catch((error) => {
-        
-        console.error('Error generating PDF:', error);
-    });
-}
-// saveAnswerKeysToPDF logic *******************************************************
 
 // sweet alert
 const generateConfirmedQuestions = ref(false);
 const generateConfirmedAnswers = ref(false)
 const displaySetQuestion = ref('')
 const displaySetAnswer = ref('')
+const isLoading = ref(false);
 const confirmation = (message)=> 
 { 
     
@@ -1424,24 +1192,9 @@ const confirmation = (message)=>
         }).then((result) => {
             if(result.isConfirmed)
             {
-                
+                isLoading.value = true;
                 customModalOpen.value = true;
-                // if(selectedSet.value) old code frontend processing <<<<<<<<<<<<<<,
-                // { 
-                //     try
-                //     {
-                //         downloadQuestionairePDF(selectedSet.value)
-                //         downloadAnswerKeysPDF(selectedSet.value)
-                //         downloadAnswerKeysCSV(selectedSet.value)
-                        
-                //     }
-                //     catch(err)
-                //     {
-                //         errorMessage(err)
-                //     }
-                    
-                // }
-                
+               
                 form.subject_code_id    = selectedSubjectCode.value.id
                 form.prelim_count       = prelimQuestionCount.value
                 form.mid_term_count     = midtermQuestionCount.value
@@ -1455,15 +1208,15 @@ const confirmation = (message)=>
                 form.post(route('testGen.generate'),{
                     preserveScroll:true,
                     preserveState :true,
-                    onError:()=>{ console.log('error generating exam')},
                     onSuccess: ()=>{
                         let myPage = usePage()
                         
                         if(myPage.props.flash.donwloadUrl)
                         {
-                              
-                            downloadFile(myPage.props.flash.donwloadUrl);
                             
+                            downloadFile(myPage.props.flash.donwloadUrl);
+                            isLoading.value = false;
+                            flashSuccessMessage('Successfully Generated Exam.');
                         }
                     }
                 })
@@ -1486,22 +1239,80 @@ const confirmation = (message)=>
 
 function errorMessage(message) {
         customModalOpen.value = false
-        Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: message + '!',
-            allowOutsideClick:false,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                customModalOpen.value = true
-            }
-        })
+        let localError = localStorage.getItem('error')
+
+        if(localError !== message)
+        {
+            localStorage.setItem('error',message)
+            
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: message + '!',
+                allowOutsideClick:false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    customModalOpen.value = true
+                    alert('puta')
+                    
+                }
+            })
+            
+            
+        }
+        
     }
 
+    function flashErrorMessage(message) 
+    {
+        let localError = localStorage.getItem('error');
+        
+        console.log(localError);
+        console.log(message);
+        if((localError !== message))
+        {
+            localStorage.setItem('error', message);
+            customModalOpen.value = false
+            let msg = message.split('.')
+            console.log(msg);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: msg[0],
+                allowOutsideClick:false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    customModalOpen.value = true
+                    isLoading.value = false;
+                }
+            })
+        }
+        
+    }
 
-const formatText = (text) => {
-    return text.replace(/\n/g, '<br>');
-};
+    function flashSuccessMessage(message)
+    {
+        customModalOpen.value = false
+
+        Swal.fire({
+            title:'Success',
+            text:message,
+            icon:'success',
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+        }).then((result)=>{
+            if(result.isConfirmed)
+            {
+                customModalOpen.value = true;
+            }
+        })
+        
+        
+    }
+    
+    const formatText = (text) => {
+        return text.replace(/\n/g, '<br>');
+    };
 
 
 

@@ -360,7 +360,7 @@
                         </div>
                        
                     </div>
-                    <ul 
+                    <!-- <ul 
                     v-if="showTestGeneratorMenu"       
                     >
                         <Link :href="route('testGen.show')">
@@ -369,14 +369,14 @@
                                 <span>Generate</span>
                             </li>
                         </Link>
-                    </ul>
+                    </ul> -->
                     <ul 
                     v-if="showTestGeneratorMenu"       
                     >
                         <Link :href="route('testGen.show.new')">
                             <li @click="toggleBackground('testGenerator2')" :class="{'bg-blue-900':clickedItem === 'testGenerator2'}" class="flex pl-10  items-center gap-2 py-2 hover:bg-blue-900 hover:cursor-pointer">
                                 <i class="pi pi-cog"></i>
-                                <span>Generate Exam</span>
+                                <span>Generate</span>
                             </li>
                         </Link>
                     </ul>
