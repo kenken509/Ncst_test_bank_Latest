@@ -271,11 +271,11 @@ class TestGeneratorController extends Controller
         $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
 
         $pdf->SetMargins(10, 10, 10, true);
-        //$pdf->SetAutoPageBreak(true, 10); // Sets bottom margin
+        $pdf->SetAutoPageBreak(true, 10); // Sets bottom margin
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
         
-        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+        //$pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
         $pdf->setFontSubsetting(true);
         $pdf->SetFont('helvetica', '', 12);
 
@@ -285,10 +285,11 @@ class TestGeneratorController extends Controller
         $pdf->SetY(73);
 
         $number = 0;
+        
         foreach ($questionSet as $question) 
         {
             $number++;
-            $pdf->setCellPaddings(2, 2, 2, 2);
+            $pdf->setCellPaddings(1, 1, 1, 1);
             // if string length is more than pagewithd - padding - margins text should be justified
             $textOrientation = 'L';
             $stringLength = strlen($question->question);
@@ -362,14 +363,26 @@ class TestGeneratorController extends Controller
                         $pageHeight = $pdf->getPageHeight() - 20;
                         $pdf->SetX($xPos + $currentWidth +5);
 
-                        if(floor($pdf->GetY()+10) >= $pageHeight)
-                        {
-                            $pdf->addPage();
-                            $pdf->setY(11);
-                            $pdf->ln();
-                            $pdf->setX(15);
+                        // Check if a page break was triggered
+                        $pageHeight = $pdf->getPageHeight() ;
+                        $bottomMargin = 10;
+                        // Check if a page break was triggered
+                        if ($pdf->GetY()+7 > $pageHeight - $bottomMargin) {
+                            // Move to the next page
+                            $pdf->AddPage();
+                            // Set Y to 10
+                            $pdf->SetY(10);
                         }
 
+                        // if(ceil($pdf->GetY())+10 > floor($pageHeight))
+                        // {
+                        //     //$pdf->MultiCell($cellWidth, 5,'im debugging here!!!!!--'.floor($pdf->GetY()), 0, 'L', 0, 0, '', '', true);
+                        //     $pdf->addPage();
+                        //     $pdf->setY(10);
+                        //     //$pdf->ln();
+                        //     $pdf->setX(15);
+                        // }
+                       
                         $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
                         $currentWidth += $cellWidth + $cellSpacing;
                     }
@@ -387,16 +400,23 @@ class TestGeneratorController extends Controller
                         
                         $pdf->SetX($xPos + $currentWidth +5);
 
-                        $pageHeight = $pdf->getPageHeight() - 20;
-                        
-                       
-                        if(floor($pdf->GetY()+10) >= $pageHeight)
-                        {
-                            $pdf->addPage();
-                            $pdf->setY(11);
-                            $pdf->ln();
-                            $pdf->setX(15);
+                        $pageHeight = $pdf->getPageHeight() ;
+                        $bottomMargin = 10;
+                        // Check if a page break was triggered
+                        if ($pdf->GetY()+7 > $pageHeight - $bottomMargin) {
+                            // Move to the next page
+                            $pdf->AddPage();
+                            // Set Y to 10
+                            $pdf->SetY(10);
                         }
+                        // if(ceil($pdf->GetY())+10 > floor($pageHeight))
+                        // {
+                        //     //$pdf->MultiCell($cellWidth, 5,'im debugging here!!!!!--'.floor($pdf->GetY()), 0, 'L', 0, 0, '', '', true);
+                        //     $pdf->addPage();
+                        //     $pdf->setY(10);
+                        //     //$pdf->ln();
+                        //     $pdf->setX(15);
+                        // }
                         
                         $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
                         $currentWidth += $cellWidth + $cellSpacing;
@@ -414,16 +434,24 @@ class TestGeneratorController extends Controller
                         
                         $pdf->SetX($xPos + $currentWidth +5);
                         
-                        $pageHeight = $pdf->getPageHeight() - 20;
-                        
-                       
-                        if(floor($pdf->GetY()+10) >= $pageHeight)
-                        {
-                            $pdf->addPage();
-                            $pdf->setY(11);
-                            $pdf->ln();
-                            $pdf->setX(15);
+                        $pageHeight = $pdf->getPageHeight() ;
+                        $bottomMargin = 10;
+                        // Check if a page break was triggered
+                        if ($pdf->GetY()+7 > $pageHeight - $bottomMargin) {
+                            // Move to the next page
+                            $pdf->AddPage();
+                            // Set Y to 10
+                            $pdf->SetY(10);
                         }
+                       
+                        // if(ceil($pdf->GetY())+10 > floor($pageHeight))
+                        // {
+                        //     //$pdf->MultiCell($cellWidth, 5,'im debugging here!!!!!>>>>>>>>>>>>>>>>>>>>>>--'.floor($pdf->GetY()), 0, 'L', 0, 0, '', '', true);
+                        //     $pdf->addPage();
+                        //     $pdf->setY(10);
+                        //     //$pdf->ln();
+                        //     $pdf->setX(15);
+                        // }
                         
                         $pdf->MultiCell($cellWidth, 5, $letter[$index].' '.$option->option, 0, 'L', 0, 0, '', '', true);
                         //$pdf->Cell($cellWidth,5,$letter[$index].' '.$option->option,1,0,'L',false,'');
@@ -437,8 +465,6 @@ class TestGeneratorController extends Controller
      
             if ($question->type == 'image') {
 
-                
-
                 // Get image paths
                 $optionA = public_path('storage/Images/' . $question->options[0]->option);
                 $optionB = public_path('storage/Images/' . $question->options[1]->option);
@@ -448,14 +474,16 @@ class TestGeneratorController extends Controller
                 $pageWidth = $pdf->getPageWidth() - $pdf->getMargins()['right'] - $pdf->getMargins()['left'];
                 $y = $pdf->GetY();
 
-                $pageHeight = $pdf->getPageHeight() - 20; // margin T10 B10
+                
 
-                if($y+5+34 > $pageHeight)
+                $pageHeight = $pdf->getPageHeight() - 10; // margin T10 B10
+
+                if($y+10+34 > $pageHeight) // y + image bt margin + pageHeight
                 {
                     $pdf->addPage();
                     $y = 10;
                 }
-            
+                
                 // Define the width for each element
                 $textWidth = 10; // Width for the text "A."
                 $imageWidth = 34; // Width for the image
@@ -471,8 +499,10 @@ class TestGeneratorController extends Controller
                 $pdf->Image($optionB, 70, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
                 $pdf->Image($optionC, 117, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
                 $pdf->Image($optionD, 164, $y+5, $imageWidth, $imageHeight, '', '', '', false, 300, '', false, false, 1, false, false, false);
-
                 $pdf->ln();
+                $btMargin = $pdf->GetY()+5;
+
+                $pdf->SetY($btMargin);
             }
             
         }

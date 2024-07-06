@@ -79,7 +79,7 @@ class CustomTCPDF extends TCPDF
     }
    
     public function Footer() {
-        // Position at 15 mm from bottom
+        // Position at 10 mm from bottom
         $this->SetY(-10);
         // Set font
         $this->SetFont('helvetica', 'I', 8);
