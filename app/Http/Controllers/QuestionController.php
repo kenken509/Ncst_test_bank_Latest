@@ -117,6 +117,7 @@ class QuestionController extends Controller
 
     public function storeQuestion(Request $request)
     {
+        
         $randomNumber = rand(1,10000000);
         $time = now();
         

@@ -11,14 +11,15 @@ use App\Models\Question;
 use App\Pdf\CustomTCPDF;
 use App\Pdf\AnswerKeyPdf;
 use App\Models\Department;
+use App\Models\ProblemSet;
 use App\Models\SubjectCode;
 use App\Exports\ExcelExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 
 class TestGeneratorController extends Controller
 {
@@ -152,7 +153,7 @@ class TestGeneratorController extends Controller
             $subject_code = SubjectCode::where('id', $request->subject_code_id)
                 ->with(['department', 'division'])
                 ->first();
-
+            $problem_set = ProblemSet::where('subject_code_id', $subject_code->id)->where('term', $request->term)->first();
             // Fetch subject details
             $subject_code_name = $subject_code->name;
             $department = $subject_code->department->name;
@@ -198,7 +199,7 @@ class TestGeneratorController extends Controller
 
                 $date = Carbon::now();
                 // Generate PDF for the current set
-                $filename = $this->generatePDF($set, $shuffledQuestionSet, $subject_code_name, $subject_description, $department, $request->semester, $request->term, $request->school_year);
+                $filename = $this->generatePDF($set, $shuffledQuestionSet, $subject_code_name, $subject_description, $department, $request->semester, $request->term, $request->school_year,$problem_set);
                 $answerKeyFileName = $this->generateAnswerKeyPdf($set, $shuffledQuestionAnswerKey, $subject_code_name, $subject_description, $department, $request->semester, $request->term, $request->school_year);
 
                 $properties = [
@@ -249,7 +250,7 @@ class TestGeneratorController extends Controller
 
 
 
-    private function generatePDF($set, $questionSet, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
+    private function generatePDF($set, $questionSet, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr,$problem_set)
     {
 
         $user = Auth::user();
@@ -433,9 +434,7 @@ class TestGeneratorController extends Controller
                 }
                 $pdf->Ln(); // Move to the next line after options
             }
-
-        
-                
+     
             if ($question->type == 'image') {
 
                 
@@ -479,6 +478,18 @@ class TestGeneratorController extends Controller
         }
         $date = Carbon::now();
          
+        if($problem_set)
+        {
+            $pdf->SetX(10);
+            $pdf->SetFont('helvetica', 'B', 12);
+            
+            // $pdf->cell(0,5,'Problem Set',0,0,'L',false,'');
+            // $pdf->ln();
+            // Set cell padding to adjust the line spacing
+            
+            $pdf->setCellHeightRatio(2); // Adjust this value as needed
+            $pdf->MultiCell(0, 10, $problem_set->content, 0, 'L', false, 1);
+        }
 
         //$set, $questionSet, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr
         $filename = $term.'-'.$subject_code_name.'-'.$set. '-' . $date->format('d-m-Y-H-i-s') . '.pdf';
@@ -491,30 +502,7 @@ class TestGeneratorController extends Controller
     //goods
     private function generateAnswerKeyPdf($set, $answerKey, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
     {
-        //$answerKey = ['C', 'A', 'A', 'A', 'D', 'A', 'C', 'B', 'A', 'C', 'B', 'A', 'B', 'D', 'C', 'D', 'B', 'B', 'D', 'B', 'B', 'B', 'C', 'D', 'D', 'B', 'A', 'C', 'C', 'A', 'B', 'C', 'D', 'B', 'A', 'C', 'C', 'D', 'C', 'D', 'A', 'A', 'A', 'D', 'C', 'B', 'B', 'B', 'C', 'D', 'D', 'C', 'C', 'B', 'C', 'A', 'D', 'C', 'D', 'D', 'B', 'A', 'B', 'D', 'A', 'B', 'B', 'A', 'D', 'A', 'D', 'C', 'A', 'D', 'C', 'D', 'D', 'D', 'C', 'B', 'C', 'D', 'D', 'C', 'B', 'C', 'B', 'C', 'D', 'D', 'B', 'D', 'B', 'A', 'A', 'C', 'B', 'B', 'B', 'B', 'A', 'D', 'A', 'C', 'C', 'C', 'A', 'C', 'D', 'A', 'B', 'B', 'A', 'D', 'B', 'A', 'C', 'C', 'C', 'D', 'A', 'B', 'D', 'B', 'A', 'B', 'C', 'D', 'B', 'B', 'D', 'B', 'A', 'B', 'A', 'D', 'D', 'C', 'C', 'D', 'B', 'B', 'D', 'B', 'A', 'A', 'D', 'D', 'D', 'B', 'A', 'B', 'D', 'A', 'D', 'C', 'A', 'C', 'D', 'A', 'B', 'B', 'A', 'A', 'A', 'A', 'C', 'A', 'A', 'B', 'C', 'A', 'B', 'A', 'A', 'D', 'B', 'D', 'A', 'B', 'B', 'D', 'B', 'B', 'D', 'B', 'A', 'D', 'C', 'A', 'B', 'C', 'D', 'D', 'C', 'C', 'D', 'B', 'A', 'C', 'B', 'B', 'A', 'B', 'B', 'A', 'B', 'C', 'D', 'C', 'C', 'A', 'D', 'B', 'D', 'A', 'C', 'C', 'A', 'C', 'A', 'C', 'B', 'C', 'C', 'C', 'D', 'C', 'B', 'B', 'B', 'A', 'A', 'A', 'D', 'C', 'D', 'B', 'C', 'D', 'B', 'D', 'D', 'D', 'D', 'D', 'B', 'D', 'D', 'C', 'B', 'B', 'A', 'B', 'D', 'B', 'B', 'D', 'C', 'C', 'C', 'C', 'A', 'D', 'C', 'C', 'A', 'A', 'C', 'C', 'B', 'C', 'D', 'D', 'D', 'C', 'D', 'D', 'D', 'B', 'C', 'C', 'B', 'A', 'C', 'B', 'C', 'C', 'B', 'B', 'C', 'D', 'C', 'B', 'D', 'B', 'D', 'C', 'A', 'B'];
-        // $answerKey = [
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        //     'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B',
-        // ];
+        
         $user = Auth::user();
         $pdf = new AnswerKeyPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -612,22 +600,7 @@ class TestGeneratorController extends Controller
    
         }   
         
-        
-        // for ($col = 0; $col < $numColumns; $col++) {
-        //     $pdf->SetY(73);
-        //     //$pdf->SetX(($col * $columnWidth)+10); // Adjust starting X position for each column
-            
-        //     for ($i = 0; $i < $maxAnswersPerColumn; $i++) {
-
-        //         $index = $col * $maxAnswersPerColumn + $i;
-        //         if ($index >= count($answerKey)) break;
-        //         $answer = $answerKey[$index];
-        //         $pdf->SetX(($col * $columnWidth)+10);
-        //         $pdf->MultiCell($columnWidth - 5, 5, ($index + 1) . '. ' . $answer, 0, 'L', false);
-        //     }
-            
-        // }
-
+    
         $date = Carbon::now();
         $filename = $term.'-'.$subject_code_name.'-'.'ANSWER-'.$set.'-' . $date->format('d-m-Y-H-i-s') . '.pdf';
         $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');

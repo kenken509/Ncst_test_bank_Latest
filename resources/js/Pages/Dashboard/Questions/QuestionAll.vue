@@ -978,9 +978,8 @@ const deleteConfirmation = (questionId)=>
 
     function successMessage(message)
     {
-        if(!displayed.value)
-        {
-            Swal.fire({
+        location
+        Swal.fire({
             title:'Success',
             text:message,
             icon:'success',
@@ -989,8 +988,8 @@ const deleteConfirmation = (questionId)=>
         }).then((result)=>{
             if(result.isConfirmed)
             {
-              
-                location.reload()
+            
+                //location.reload()
             //    if(page.props.flash.action)
             //    {
             //         location.reload();
@@ -998,23 +997,43 @@ const deleteConfirmation = (questionId)=>
                 
             }
         })
-        }  
+     
         
     }
     
-    function errorMessage(message) {
-        Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: message + '!',
-            allowOutsideClick:false,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                location.reload();
-            }
-        })
-    }
+    // old errorMessage
+    // function errorMessageOld(message) {
+    //     Swal.fire({
+    //         icon: "error",
+    //         title: "Oops...",
+    //         text: message + '!',
+    //         allowOutsideClick:false,
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             location.reload();
+    //         }
+    //     })
+    // }
     
+    function errorMessage(message) {
+        let localError = localStorage.getItem('error');
+        if(localError !== message)
+        {
+            let msg = message.split('.');
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: msg[0],
+                allowOutsideClick:false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.setItem('error',message);
+                }
+            })
+        }
+        
+    }
+
     function errorMessage2(message) {
         Swal.fire({
             icon: "error",
@@ -1467,6 +1486,7 @@ const submitConfirmation = ()=>
                         preserveState:true,
                         preserveScroll:true,
                     })
+
                     displayed.value = false
                 }
 

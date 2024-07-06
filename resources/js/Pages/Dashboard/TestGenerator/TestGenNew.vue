@@ -1253,7 +1253,6 @@ function errorMessage(message) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     customModalOpen.value = true
-                    alert('puta')
                     
                 }
             })
