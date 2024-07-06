@@ -269,6 +269,7 @@ import {ref,onMounted, computed,watch,reactive} from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3';
 import jsPDF from 'jspdf';
 import html2pdf from 'html2pdf.js'; // Ensure the correct import path
+import { router } from '@inertiajs/vue3'
 
 
 const customModalOpen = ref(true)
@@ -1454,13 +1455,15 @@ const confirmation = (message)=>
                 form.post(route('testGen.generate'),{
                     preserveScroll:true,
                     preserveState :true,
-                    onFinish: ()=>{
+                    onError:()=>{ console.log('error generating exam')},
+                    onSuccess: ()=>{
                         let myPage = usePage()
                         
                         if(myPage.props.flash.donwloadUrl)
                         {
                               
                             downloadFile(myPage.props.flash.donwloadUrl);
+                            
                         }
                     }
                 })
@@ -1517,7 +1520,8 @@ const downloadFile = (url) => {
     }
 };
 
-</script>
+
+</script>   
 
 
 

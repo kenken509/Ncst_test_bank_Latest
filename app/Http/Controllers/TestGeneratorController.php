@@ -12,10 +12,13 @@ use App\Pdf\CustomTCPDF;
 use App\Pdf\AnswerKeyPdf;
 use App\Models\Department;
 use App\Models\SubjectCode;
+use App\Exports\ExcelExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class TestGeneratorController extends Controller
 {
@@ -142,9 +145,10 @@ class TestGeneratorController extends Controller
 
     public function generateExam(Request $request)
     {
+        $user = Auth::user();
+        $this->cleanUp();
         
-        
-        try {
+        try {   
             $subject_code = SubjectCode::where('id', $request->subject_code_id)
                 ->with(['department', 'division'])
                 ->first();
@@ -192,13 +196,29 @@ class TestGeneratorController extends Controller
                     }
                 }
 
-                
+                $date = Carbon::now();
                 // Generate PDF for the current set
                 $filename = $this->generatePDF($set, $shuffledQuestionSet, $subject_code_name, $subject_description, $department, $request->semester, $request->term, $request->school_year);
                 $answerKeyFileName = $this->generateAnswerKeyPdf($set, $shuffledQuestionAnswerKey, $subject_code_name, $subject_description, $department, $request->semester, $request->term, $request->school_year);
 
+                $properties = [
+                    'creator'        => ucFirst($user->role).' '.ucFirst($user->name),
+                    'lastModifiedBy' => ucFirst($user->role).' '.ucFirst($user->name),
+                    'title'          => $subject_code_name.' '.'Set '.$set.' Answer keys',
+                    'description'    => ucFirst($request->term).' Exam Answer Keys',
+                    'subject'        => '',
+                    'keywords'       => '',
+                    'category'       => '',
+                    'manager'        => '',
+                    'company'        => 'National College of Science and Technology',
+                ];
+                $excelFileName = ucFirst($request->term).'-'.$subject_code_name.'-ANSWER-'.$set.'-'.$date->format('d-m-Y-H-i-s').'.csv';      //final-ACT106-ANSWER-A-02_07_2024 15.33.28.csv
+                $filePath = 'Pdfs/' . $excelFileName;
+                Excel::store(new ExcelExport($shuffledQuestionAnswerKey, $properties), $filePath, 'public');
+
                 $pdfFiles[] = $filename;
                 $pdfFiles[] = $answerKeyFileName;
+                $pdfFiles[] = $excelFileName;
                 // Log successful PDF generation
                 Log::info("PDF generated for Set: $set, Subject: $subject_code_name");
             }
@@ -217,7 +237,7 @@ class TestGeneratorController extends Controller
             Log::info("Zip file created: $zipFilename");
 
             $downloadUrl = Storage::url('public/pdfs/' . $zipFilename);
-
+            
             return redirect()->back()->with('donwloadUrl', $downloadUrl);
         } catch (\Exception $e) {
             // Log any exceptions that occur
@@ -641,4 +661,35 @@ class TestGeneratorController extends Controller
         return $zipFilename;
     }
 
+    public function cleanUp()
+    {
+        
+        $directory = public_path('storage/Pdfs');
+
+        // Check if the directory exists
+        if (File::exists($directory)) {
+            // Delete the directory and its contents
+            File::deleteDirectory($directory);
+
+            // Recreate the empty directory if needed
+            File::makeDirectory($directory, 0755, true, true);
+        }
+
+    }
+
+    // public function deleteFolderContents()
+    // {
+    //     $directory = public_path('storage/Pds');
+
+    //     // Check if the directory exists
+    //     if (File::exists($directory)) {
+    //         // Delete the directory and its contents
+    //         File::deleteDirectory($directory);
+
+    //         // Recreate the empty directory if needed
+    //         File::makeDirectory($directory, 0755, true, true);
+    //     }
+
+    //     return 'Directory contents deleted successfully.';
+    // }
 }

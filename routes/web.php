@@ -87,6 +87,8 @@ Route::controller(TestGeneratorController::class)->group(function(){
 
     Route::get('/test_bank/test-generator', 'showTestGeneratorNew')->name('testGen.show.new'); 
     Route::post('/test_bank/test-generator/generate', 'generateExam')->name('testGen.generate');
+
+    Route::get('/test_bank/test-generator/generate/clean-up','cleanUp')->name('file.cleanUp');
 })->middleware('isAdmin');
 
 Route::controller(TestPageController::class)->group(function(){
