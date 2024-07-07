@@ -188,7 +188,7 @@
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ question.id }}
                                 </th>
-                                <th scope="row" class=" px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <th scope="row" class=" px-6 py-4 font-medium text-gray-900  dark:text-white">
                                 {{ question.question }}
                                 </th>
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -1144,21 +1144,37 @@ const deleteConfirmation = (questionId)=>
 
  
 
-
+const selectedTab = ref('text');
 const imageTabClicked = ()=>{
+
+    if(selectedTab.value !== 'image')
+    {
+        clearOptions();
+        clearImageUrls();
+    }
+
+    selectedTab.value = 'image'
     imageTab.value = true
     textTab.value = false
     form.type = 'image'
-    clearOptions()
-    clearImageUrls()
+    
 }
 
 const textTabClicked = ()=>{
+
+    if(selectedTab.value !== 'text')
+    {
+        clearOptions();
+        clearImageUrls();
+    }
+
+    selectedTab.value = 'text';
     textTab.value = true
     imageTab.value = false
     form.type = 'text'
-    clearOptions();
-    clearImageUrls()
+
+
+    
 }
 const fileInput = ref('')
 
