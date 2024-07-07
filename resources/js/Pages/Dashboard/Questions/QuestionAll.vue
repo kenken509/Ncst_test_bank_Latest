@@ -118,8 +118,7 @@
                         </div>
                     </div>
                     
-                    <div class="flex  flex-col  gap-3 ">
-                        
+                    <div class="flex  flex-col  gap-3 mb-4 ">
                         
                         <div class="flex flex-row  gap-3" > 
                             <span class="flex items-center"> Term: </span>   
@@ -155,14 +154,11 @@
                             </span>
                         </div>
                     </div>
-                    
-                   
-                    
                 </div>
                 
                 <div class=" items-center mb-2 gap-2">
                     
-                    <div class=" flex flex-col w-full gap-2 " :class="{'col-span-1':!isAdminOrCoAdmin, 'col-span-3':isAdminOrCoAdmin }"><!--andito ako 1-->
+                    <div class=" flex flex-col w-full " ><!--andito ako 1-->
                         <button @click="handleProblemSetButtonClicked" v-if="user.role === 'admin'" type="button" class="text-center btn-primary p-2 w-full hover:cursor-pointer">+ Problem Set</button>
                         <button @click="handleAddQuestionModal" type="button" class="btn-primary p-2 w-full">+ New</button>
                     </div>
