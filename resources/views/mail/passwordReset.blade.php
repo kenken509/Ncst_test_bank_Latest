@@ -60,11 +60,11 @@
     <div class="container">
         <h1>Password Reset</h1>
         <p>Hello,</p>
-        <p>We have sent you this email in response to your request to reset your password on NCST TEST BANK.</p>
+        <p>This email is sent in response to your request to reset your password on NCST TEST BANK..</p>
         <p>To reset your password, please follow the link below:</p>
         <a href="{{$mailData['url']}}" target="_blank" class="reset-password">Reset Password</a>
         <p>Please ignore this email if you did not request a password change.</p>
-        <p>Note: Reset link is valid within 60 mins.</p>
+        <p style="color:red;">Note: Reset link is valid within 60 mins.</p>
         <div class="contact-info">
             <p>Contact :</p>
             <p>Amafel Bldg., Aguinaldo Hi-way, Dasmariñas, Philippines</p>
