@@ -13,7 +13,24 @@ class AuthController extends Controller
 {
     public function create()
     {
-        return inertia('Authentication/Login');
+        if(!Auth::user())
+        {
+            return inertia('Authentication/Login');
+        }
+        
+        if(Auth::user()->role === 'admin' || Auth::user()->role === 'co-admin')
+        {
+            return redirect()->route('dashboard.show');
+        }
+
+        if(Auth::user()->role === 'department head' || Auth::user()->role === 'faculty')
+        {
+            return redirect()->route('questions.show');
+        }
+        
+        
+
+        
     } 
 
     public function store(Request $request)
