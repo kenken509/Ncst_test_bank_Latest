@@ -1,6 +1,6 @@
 <template>
     <DashboardLayout>
-        <div class="flex items-center justify-between border-bot-only py-2 mb-4">
+        <div class="flex items-center justify-between border-bot-only py-2 ">
             <span class="text-[20px] font-bold text-gray-500">Add User Page</span> 
             <div class="relative">
                 <input v-model="searchField" type="text" placeholder="search" class="rounded-md">
@@ -13,10 +13,10 @@
         <div v-if="$page.props.flash.error" >{{ errorMessage($page.props.flash.error) }} </div>
         <div v-if="addNewUserForm.errors.email">{{errorMessage(addNewUserForm.errors.email)}}</div>
         
-        <div>
-            <form>
-                <div class=" mb-4 mt-6">
-                  <span class=" font-semibold text-lg text-gray-500">User Information:</span> 
+        <div class="w-full flex justify-center">
+            <form class="w-full md:w-[60%] border border-gray-500 p-5 rounded-md shadow-md md:mt-[100px]" >
+                <div class=" mb-6 border-b-2">
+                  <span class=" font-semibold text-lg text-gray-500">User Information</span> 
                 </div>
                  
                 <div class="grid grid-cols-2 gap-4">
@@ -61,11 +61,12 @@
                     </div>
                 </div>
                 <!-- isfaculty = {{ isFaculty }} | hasdivision = {{ hasDivision }} || addUserDepartment = {{ addUserDepartment.name }} -->
+                <div class="mt-4">
+                    <button @click="submitNewUser" type="button" :disabled="addNewUserForm.processing" class="w-full btn-primary " >Save</button>
+                </div>
             </form>
            <!-- email: {{ addNewUserForm.email }} || name: {{ addNewUserForm.name }} || role: {{ addUserRole }} || department: {{ addUserDepartment.id }} || division {{ addUserDivision.id }} -->
-            <div class="mt-4">
-                <button @click="submitNewUser" type="button" :disabled="addNewUserForm.processing" class="w-full btn-primary " >Save</button>
-            </div>
+            
         </div>    
         
     </DashboardLayout>

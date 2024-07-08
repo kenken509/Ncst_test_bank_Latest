@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Log;
+use Exception;
 use PDOException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Process;
-use Exception;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 
@@ -26,36 +27,32 @@ class BackUpController extends Controller
         $username = env('DB_USERNAME');
         $password = env('DB_PASSWORD');
         $host = env('DB_HOST');
-        $filename = "backup-{$database}-" . date('Y-m-d_H-i-s') . ".sql";
-        $backupFile = "C:/xampp/htdocs/Test_Bank-v1-main/public/backup/{$filename}";
-    
+        $filename = $database.'_backup_file_'. date('Y-m-d_H-i-s') . ".sql";
+        $backupFile = "public/backup/{$filename}";
+        $backupFilePath = storage_path("app/{$backupFile}");
+
         try {
             // Construct the command
-            $command = "\"$mysqldumpPath\" --user=$username --password=$password --host=$host $database > \"$backupFile\"";
+            $command = "\"$mysqldumpPath\" --user=$username --password=$password --host=$host $database > \"$backupFilePath\"";
+
             exec($command, $output, $returnVar);
-            //dd('i');
+
             if ($returnVar !== 0) {
                 throw new Exception("mysqldump command failed with return code $returnVar");
             }
+
+            // // Generate a URL for the backup file
+            $url = url("storage/backup/{$filename}");
             
+            return redirect()->back()->with('success', $url);
             
-            // Read the backup file content
-            $backupContent = file_get_contents($backupFile);
-            
-            return response($backupContent)
-                ->header('Content-Type', 'application/octet-stream')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
         } catch (Exception $e) {
             Log::error('Error running mysqldump command: ' . $e->getMessage());
-            throw $e;
-        } finally {
-            // Clean up the backup file
-            if (file_exists($backupFile)) {
-                unlink($backupFile);
-            }
+            return redirect()->back()->withErrors(['error' => 'Error creating backup']);
         }
     }
     
+
     public function showRestore()
     {
         return inertia('Dashboard/Backup/Restore');

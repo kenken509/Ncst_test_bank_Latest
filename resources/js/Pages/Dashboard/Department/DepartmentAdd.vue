@@ -9,11 +9,17 @@
         <div v-if="$page.props.flash.error" >{{ errorMessage($page.props.flash.error) }} </div>
         <div v-if="form.errors.departmentName">{{errorMessage(form.errors.departmentName)}}</div>
         
-        <div class="flex flex-col align-items-center gap-3 mb-3 mt-10 w-full md:w-1/2">
-            <label for="username" class="font-semibold w-6rem">Department Name</label>
-            <!-- <InputText id="username" class="flex-auto border border-gray-500  " autocomplete="off"  placeholder="Enter department name" /> -->
-            <input v-model="form.departmentName" type="text" placeholder="Enter department name" class="flex-auto border border-gray-500 rounded " required/>
-            <button @click="submitConfirmation" type="button" class="w-full btn-primary" >Save</button>
+        <div class="w-full flex justify-center md:mt-[100px]">
+            
+            <div class="flex flex-col align-items-center  gap-3 mb-3  w-full   md:w-[400px] broder broder-gray-300 rounded-md shadow-md p-4 border border-gray-500">
+                <span class="border-b border-gray-300 mb-2 ">
+                    Information
+                </span>
+                <label for="username" class="font-semibold w-6rem">Department Name</label>
+                <!-- <InputText id="username" class="flex-auto border border-gray-500  " autocomplete="off"  placeholder="Enter department name" /> -->
+                <input v-model="form.departmentName" type="text" placeholder="Enter department name" class="flex-auto border border-gray-500 rounded " required/>
+                <button @click="submitConfirmation" type="button" class="w-full btn-primary" >Save</button>
+            </div>
         </div>
 
         

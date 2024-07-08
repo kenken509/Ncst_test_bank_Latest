@@ -38,10 +38,11 @@ class HandleInertiaRequests extends Middleware
         $user = $request->user();
         return array_merge(parent::share($request), [
             'flash' => [
-                'success'       => $request->session()->get('success'),
-                'error'         => $request->session()->get('error'),
-                'action'        => $request->session()->get('action'),
-                'donwloadUrl'   => $request->session()->get('donwloadUrl'),
+                'success'               => $request->session()->get('success'),
+                'error'                 => $request->session()->get('error'),
+                'action'                => $request->session()->get('action'),
+                'donwloadUrl'           => $request->session()->get('donwloadUrl'),
+                'backUpDonwloadUrl'     => $request->session()->get('backUpDonwloadUrl'),
             ],
             'user' => $user ? [
                 'id'            => $user->id,

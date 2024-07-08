@@ -7,25 +7,29 @@
 
         <div v-if="$page.props.flash.success" >{{ successMessage($page.props.flash.success) }} </div>
         <div v-if="$page.props.flash.error" >{{ errorMessage($page.props.flash.error) }} </div>
-        <form @submit.prevent="addConfirmation">
+        <div class="w-full flex justify-center mt-[100px]">
+            <form @submit.prevent="addConfirmation">
 
-            <div class="flex w-full flex-col w-full md:w-[50%] pt-2">
-
-                <label for="depName" class="my-2 text-lg font-semibold text-gray-600">Division Name :</label>
-                <input v-model="form.divisionName" type="text" id="depName" placeholder="Enter division name" class="rounded rounded-lg border border-blue-700 my-2" required/>
-                
-                
-                <label for="departments" class="my-2 text-lg font-semibold text-gray-600" >Department :</label>
-                <select v-model="form.departmentId"  id="countries" class="bg-gray-50 border border-blue-500 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2 hover:cursor-pointer" required>
-                    <option value="" selected hidden>Select a department</option>
-                    <option :value="dep.id" v-for="dep in data.existingDepartment" :key="dep.id" class="text-gray-800">
-                        {{ dep.name }}
-                    </option>
-                </select>
-                
-                <button  type="submit" class="btn-primary ">Save</button>
-            </div>
-        </form>
+                <div class="flex w-[100vw] flex-col  md:w-[400px]  border border-gray-500 rounded shadow-md px-4 pt-6">
+                    <span class="border-b border-gray-300 mb-2 ">
+                        Information
+                    </span>
+                    <label for="depName" class="my-2 text-lg font-semibold text-gray-600">Division Name :</label>
+                    <input v-model="form.divisionName" type="text" id="depName" placeholder="Enter division name" class="rounded rounded-lg border border-blue-700 my-2" required/>
+                    
+                    
+                    <label for="departments" class="my-2 text-lg font-semibold text-gray-600" >Department :</label>
+                    <select v-model="form.departmentId"  id="countries" class="bg-gray-50 border border-blue-500 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2 hover:cursor-pointer" required>
+                        <option value="" selected hidden>Select a department</option>
+                        <option :value="dep.id" v-for="dep in data.existingDepartment" :key="dep.id" class="text-gray-800">
+                            {{ dep.name }}
+                        </option>
+                    </select>
+                    
+                    <button  type="submit" class="btn-primary ">Save</button>
+                </div>
+            </form>
+        </div>
     </DashboardLayout>
 </template>
 

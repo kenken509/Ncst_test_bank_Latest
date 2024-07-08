@@ -638,6 +638,186 @@ class TestGeneratorController extends Controller
         return $filename;
     }
 
+    // for debugging >>>>>>>>
+    // private function generateAnswerKeyPdf($set, $answerKey, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
+    // {
+        
+    //     $answerKey = [
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //         'A','B','C','D','A','B','C','D','C','D',
+    //     ];
+    //     $user = Auth::user();
+    //     $pdf = new AnswerKeyPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    //     $pdf->selectedDepartment    = $department;
+    //     $pdf->subject_description   = $subject_description;
+    //     $pdf->selectedTerm          = $term;
+    //     $pdf->selectedSubjectCode   = $subject_code_name;
+    //     $pdf->selectedSemester      = $semester;
+    //     $pdf->selectedSchoolYear    = $schoolYr;
+    //     $pdf->set                   = $set;
+
+    //     $pdf->SetCreator(PDF_CREATOR);
+    //     $pdf->SetAuthor($user->role . ' ' . $user->name);
+    //     $pdf->SetTitle($term.' Set '.$set.' Answer Key in ' . $subject_code_name);
+    //     $pdf->SetSubject('Generated Exam Paper');
+    //     $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
+
+    //     $pdf->SetMargins(10, 10, 10, true);
+    //     $pdf->setPrintHeader(true);
+    //     $pdf->setPrintFooter(true);
+        
+    //     $pdf->SetAutoPageBreak(true, 10);
+    //     $pdf->setFontSubsetting(true);
+    //     $pdf->SetFont('helvetica', '', 12);
+
+    //     $pdf->AddPage();
+
+    //     // Write header information
+    //     $pdf->SetY(73);
+
+    //     $pdf->setCellPadding(1.5,1.5,1.5,1.5);
+
+    //     // Column settings
+    //     $maxAnswersPerColumn = 25;
+    //     $maxNumberOfColumns = 8;
+    //     $numColumns = ceil(count($answerKey) / $maxAnswersPerColumn);
+
+        
+    //     $currentColumn = 0;
+
+    //     // page width = 290
+    //     if(floor($numColumns) > 8)
+    //     {
+    //         $columnWidth = floor($pdf->getPageWidth() - 20) / $maxNumberOfColumns; // Adjust the width based on margins
+    //     }
+    //     else
+    //     {   
+    //         $columnWidth = floor($pdf->getPageWidth() - 20) / $numColumns; // Adjust the width based on margins
+    //     }
+        
+        
+    //     for($currentColumn ; $currentColumn < $numColumns; $currentColumn++)
+    //     {
+           
+    //         $startingIndex = $currentColumn*$maxAnswersPerColumn;
+    //         $endingIndex = $maxAnswersPerColumn;
+
+    //         // Create the new array based on the specified range
+    //         $newArray = array_slice($answerKey, $startingIndex, $endingIndex);
+
+    //         $x = 0;
+    //         $pageW = $pdf->getPageWidth() -10;
+            
+    //         if($pdf->getPage() == 1)
+    //         {
+    //             $pdf->SetY(73);
+
+    //             if($currentColumn > 7)
+    //             {
+    //                 $pdf->SetX((($currentColumn-($pdf->getPage() * 8))*$columnWidth)+10);
+    //             }
+    //             else
+    //             {
+    //                 $pdf->SetX(($currentColumn*$columnWidth)+10);
+    //             }
+    //         }
+    //         else
+    //         {
+    //             $pdf->SetY(10);
+
+    //             if($currentColumn > 7)
+    //             {
+    //                 $pdf->SetX((($currentColumn-($pdf->getPage() * 8))*$columnWidth)+10);
+    //             }
+    //             else
+    //             {
+    //                 $pdf->SetX(($currentColumn*$columnWidth)+10);
+    //             }
+                
+    //         }
+
+    //         $addedAPage = false;
+
+    //         foreach($newArray as $index => $answer)
+    //         {
+
+                
+
+    //             $x = $pdf->GetX();
+    //             if(($x + $columnWidth) > $pageW)
+    //             {
+    //                 $pdf->addPage();
+    //                 $pdf->SetX(10);
+                    
+    //             }
+
+
+    //             $pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer, 1, 'L', false);
+    //         }
+   
+    //     }   
+        
+    
+    //     $date = Carbon::now();
+    //     $filename = $term.'-'.$subject_code_name.'-'.'ANSWER-'.$set.'-' . $date->format('d-m-Y-H-i-s') . '.pdf';
+    //     $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
+
+    //     return $filename;
+    // }
+
     
 
 

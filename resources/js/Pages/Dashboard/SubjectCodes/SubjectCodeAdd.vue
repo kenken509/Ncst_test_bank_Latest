@@ -1,15 +1,18 @@
 <template>
 <DashboardLayout>
-    <div class="flex items-center justify-between border-bot-only py-2 mb-4">
+    <div class="flex items-center justify-between border-bot-only py-2 ">
         <span class="text-[20px] font-bold text-gray-500">Add Subject Codes Page </span> 
         
     </div>
     <!-- hasDivision || {{ hasDivision }} || selected dep: {{ selectedDepartment.name }} || selected Div: {{ selectedDivision }} || Description:  {{ form.description.length }} -->
-    <div>
-        <form @submit.prevent="submitConfirmation">
+    <div class="w-full flex justify-center">
+        <form @submit.prevent="submitConfirmation" class="w-full md:w-[50%] border border-gray-500 rounded-md p-4 shadow-md mt-4 md:mt-[50px] " >
+            
             <div v-if="form.errors.name">{{ errorMessage(form.errors.name) }}</div>
-            <div class="flex w-full flex-col w-full md:w-[50%] pt-2">
-
+            <div class="flex w-full flex-col ">
+                <span class="w-full border-b border-gray-300 mb-4 ">
+                    Information
+                </span>
                 <label for="subCode" class="my-2 text-lg font-semibold text-gray-600">Subject Code :</label>
                 <input v-model="form.name" type="text" id="subCode" placeholder="Enter subject code" class="rounded rounded-lg border border-blue-700 my-2" required/>
                 

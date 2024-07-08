@@ -460,7 +460,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { usePage, Link, router } from '@inertiajs/vue3';
 import CustomModal from '../Global Component/CustomModal.vue';
 import axios from 'axios';
@@ -606,5 +606,33 @@ const logout = async () => {
 // Function to clear localStorage item on logout
 const clearLocalStorageOnLogout = () => {
   localStorage.removeItem('dataDisplayedOnce'); // Remove the item from localStorage
+};
+
+//backup logic
+onMounted(()=>{
+    const page = usePage()
+
+    if(page.props.flash.backUpDonwloadUrl)
+    {
+        const url = page.props.flash.backUpDonwloadUrl;
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download','backup_file.sql');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); 
+    }
+
+    
+})
+
+const downloadBackup = () => { 
+  
+  router.visit(route('backup.download'),{
+    onSuccess:()=>{alert('sucessfully back up')},
+    onFinish:()=>{alert('yo')}
+
+  })
+
 };
 </script>
