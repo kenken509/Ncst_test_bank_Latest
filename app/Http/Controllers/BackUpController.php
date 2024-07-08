@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Process;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-
+use Illuminate\Support\Facades\File;
 
 
 class BackUpController extends Controller
@@ -22,6 +22,7 @@ class BackUpController extends Controller
 
     public function download()
     {
+        $this->cleanUp();
         $mysqldumpPath = 'C:/xampp/mysql/bin/mysqldump';
         $database = env('DB_DATABASE');
         $username = env('DB_USERNAME');
@@ -119,6 +120,22 @@ class BackUpController extends Controller
             // Dump the error message if connection fails
             dd("Connection failed: " . $e->getMessage());
         }
+    }
+
+    public function cleanUp()
+    {
+        
+        $directory = public_path('storage/backup');
+
+        // Check if the directory exists
+        if (File::exists($directory)) {
+            // Delete the directory and its contents
+            File::deleteDirectory($directory);
+
+            // Recreate the empty directory if needed
+            File::makeDirectory($directory, 0755, true, true);
+        }
+
     }
 
 }
