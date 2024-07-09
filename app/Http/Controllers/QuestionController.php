@@ -174,7 +174,7 @@ class QuestionController extends Controller
                 }
 
                 DB::commit();
-                return redirect()->route('questions.show')->with('success', 'Successfully created new question.'.$question->id.$time);
+                return redirect()->route('questions.show')->with('success', 'Successfully created new question.');
             }catch (\Exception $e)
             {
                 DB::rollback();
@@ -185,7 +185,7 @@ class QuestionController extends Controller
                     Storage::disk('public')->delete('Images/' . $filename);
                 }
 
-                return redirect()->back()->with('error', 'Failed to create new question.'.$question->id.$time);
+                return redirect()->back()->with('error', 'Failed to create new question.');
             }
             
         }
@@ -238,7 +238,7 @@ class QuestionController extends Controller
                     //throw new \Exception('Simulated error after saving the attached image');
 
                     DB::commit();
-                    return redirect()->route('questions.show')->with('success', 'Successfully created new question.'.$question->id.$time);
+                    return redirect()->route('questions.show')->with('success', 'Successfully created new question.');
                 
                 }
                 catch (\Exception $e)
@@ -251,7 +251,7 @@ class QuestionController extends Controller
                         Storage::disk('public')->delete('Images/' . $filename);
                     }
 
-                    return redirect()->back()->with('error', 'Failed to create new question'.$time);
+                    return redirect()->back()->with('error', 'Failed to create new question');
                 }
                 
             }
@@ -289,7 +289,7 @@ class QuestionController extends Controller
 
                     //throw new \Exception('simulated error');
                     DB::commit();
-                    return redirect()->route('questions.show')->with('success','Successfully created new question.'.$question->id.$time);
+                    return redirect()->route('questions.show')->with('success','Successfully created new question.');
                     
                 }
                 catch(\Exception $e)
@@ -302,7 +302,7 @@ class QuestionController extends Controller
                         Storage::disk('public')->delete('Images/' . $filename);
                     }
                     
-                    return redirect()->back()->with('error', 'Failed to create new question.'.$time);
+                    return redirect()->back()->with('error', 'Failed to create new question.');
                 }
             }
         }
