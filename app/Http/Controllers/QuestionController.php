@@ -763,7 +763,7 @@ class QuestionController extends Controller
                 DB::commit();
 
                 return redirect()->route('questions.show')->with([
-                    'success'   => 'Successfully Deleted a Questions.'.$time.$randomNumber,
+                    'success'   => 'Successfully Deleted a Questions.',
                     'action'    => 'reload'
                 ]);
             }catch(\Exception $e)
@@ -771,7 +771,7 @@ class QuestionController extends Controller
                 DB::rollback();
                 Log::error('error deleting question: '.$e->getMessage());
 
-                return redirect()->back()->with('error', 'Failed to delete question. Please try again.'.$time.$randomNumber);
+                return redirect()->back()->with('error', 'Failed to delete question. Please try again.');
             }
             
         }

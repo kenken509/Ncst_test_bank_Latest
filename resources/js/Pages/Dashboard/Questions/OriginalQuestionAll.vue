@@ -199,7 +199,7 @@
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ question.id }}
                                 </th>
-                                <th scope="row" class="flex flex-wrap x-6 py-4 font-medium text-gray-900 text-justify dark:text-white">
+                                <th scope="row" class="  px-2 py-4 font-medium text-gray-900 text-justify dark:text-white">
                                     {{ question.question }}
                                 </th>
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -253,7 +253,7 @@
                                 <th scope="col" class="px-6 py-3">Author</th>
                                 <th scope="col" class="px-6 py-3">Date</th>
                                 
-                            
+                                
 
                                 
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
@@ -269,7 +269,7 @@
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ question.id }}
                                 </th>
-                                <th scope="row" class=" px-6 py-4 font-medium text-gray-900  dark:text-white">
+                                <th scope="row" class="  px-2 py-4 font-medium text-gray-900 text-justify dark:text-white">
                                 {{ question.question }}
                                 </th>
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">

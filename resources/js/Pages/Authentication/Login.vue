@@ -18,16 +18,20 @@
             <div class="flex justify-center items-center w-full  pt-4 ">
                 <form @submit.prevent="login" class="w-full px-4 ">
                     <div class="flex flex-col  gap-5 ">
-                        <div class="">
+                        <div class=" relative">
+                            
                             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                            <input v-model="form.email" type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="email" required />
+                            <input v-model="form.email" type="email" id="email" class="bg-gray-50  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="email" required />
+                            <i class="pi pi-envelope text-gray-500 text-1 absolute top-[38px] left-3"></i>
                         </div>
-                        <div >
+                        <div class="relative">
                             <label for="passWord" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                            <input v-model="form.password" type="password" id="passWord" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="password" required />
+                            <input v-model="form.password" :type="showPassword ? 'text':'password'" id="passWord" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="password" required />
+                            <i v-if="showPassword" @click="handleShowPassword" class="pi pi-eye-slash text-gray-500 text-1 absolute top-[38px] left-3 hover:cursor-pointer" ></i>
+                            <i v-else @click="handleShowPassword" class="pi pi-eye text-gray-500 text-1 absolute top-[38px] left-3 hover:cursor-pointer" ></i>
                         </div>
                     </div>
-
+                    
                     <div class="mt-4 pl-2">
                         <span class="text-gray-500">Forgot password? </span> <button type="button" @click="toggleShowForgotPWModal" class="text-blue-500">click here</button>
                     </div>
@@ -80,8 +84,11 @@ import { useForm, Link } from '@inertiajs/vue3';
 import InputError from '../Global Component/InputError.vue';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 
+const showPassword = ref(false)
 
-
+function handleShowPassword(){
+    showPassword.value = !showPassword.value
+}
 const logoUrl = ref('/storage/Images/ncstLogo.png')
 const showForgotPWModal =ref(false)
 
