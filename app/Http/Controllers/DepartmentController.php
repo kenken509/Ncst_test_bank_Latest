@@ -46,6 +46,7 @@ class DepartmentController extends Controller
 
     public function addDepartment()
     {
+        
         return inertia('Dashboard/Department/DepartmentAdd');
     }
 

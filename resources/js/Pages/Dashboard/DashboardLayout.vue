@@ -445,7 +445,7 @@
                     </svg>
                 </button>
                 <span class="text-gray-200 pr-2 mr-5">
-                    Welcome back, <span v-if="user.role==='admin'"> {{ capitalizeFirstLetter(user.role) }}</span> {{ capitalizeFirstLetter(user.name) }}
+                    Welcome back, <span v-if="user.role==='admin'"> {{ capitalizeFirstLetter(user.role) }}</span> {{ capitalizeFirstLetter(user.name) }} 
                 </span>
             </div>
             <div class="p-8  ">

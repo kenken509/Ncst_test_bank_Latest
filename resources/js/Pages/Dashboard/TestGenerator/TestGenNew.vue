@@ -34,7 +34,7 @@
                         <hr>
                     </div>
                     <div class="my-2">
-                        <span class="text-black font-semibold">Select Term: set A: </span>
+                        <span class="text-black font-semibold">Select Term: </span>
                     </div>
                     <div class="w-full m-auto border px-4 bg-blue-100 rounded-md shadow-inner ">
                         <div class="w-full grid grid-cols-5 gap-2 my-2">

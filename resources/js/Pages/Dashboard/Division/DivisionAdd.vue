@@ -4,7 +4,7 @@
             <span class="text-[20px] font-bold text-gray-500">Add Division Page</span> 
             
         </div>
-
+        {{ data.existingDepartment }}
         <div v-if="$page.props.flash.success" >{{ successMessage($page.props.flash.success) }} </div>
         <div v-if="$page.props.flash.error" >{{ errorMessage($page.props.flash.error) }} </div>
         <div class="w-full flex justify-center mt-[100px]">
@@ -21,7 +21,7 @@
                     <label for="departments" class="my-2 text-lg font-semibold text-gray-600" >Department :</label>
                     <select v-model="form.departmentId"  id="countries" class="bg-gray-50 border border-blue-500 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2 hover:cursor-pointer" required>
                         <option value="" selected hidden>Select a department</option>
-                        <option :value="dep.id" v-for="dep in data.existingDepartment" :key="dep.id" class="text-gray-800">
+                        <option :value="dep.id" v-for="dep in data.existingDepartment"  :key="dep.id" class="text-gray-800">
                             {{ dep.name }}
                         </option>
                     </select>

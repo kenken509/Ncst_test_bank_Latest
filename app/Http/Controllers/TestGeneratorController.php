@@ -172,10 +172,10 @@ class TestGeneratorController extends Controller
             foreach ($selectedExamSet as $set) {
                 
                 // Fetch questions for each term and merge them into a single collection
-                $prelimQuestions = Question::where('term', 'prelim')->inRandomOrder()->take($request->prelim_count ?? 0)->get()->unique('id');
-                $midtermQuestions = Question::where('term', 'mid-term')->inRandomOrder()->take($request->mid_term_count ?? 0)->get()->unique('id');
-                $preFinalQuestions = Question::where('term', 'pre-final')->inRandomOrder()->take($request->pre_final_count ?? 0)->get()->unique('id');
-                $finalQuestions = Question::where('term', 'final')->inRandomOrder()->take($request->final_count ?? 0)->get()->unique('id');
+                $prelimQuestions = Question::where('subject_code_id',$request->subject_code_id)->where('term', 'prelim')->inRandomOrder()->take($request->prelim_count ?? 0)->get()->unique('id');
+                $midtermQuestions = Question::where('subject_code_id',$request->subject_code_id)->where('term', 'mid-term')->inRandomOrder()->take($request->mid_term_count ?? 0)->get()->unique('id');
+                $preFinalQuestions = Question::where('subject_code_id',$request->subject_code_id)->where('term', 'pre-final')->inRandomOrder()->take($request->pre_final_count ?? 0)->get()->unique('id');
+                $finalQuestions = Question::where('subject_code_id',$request->subject_code_id)->where('term', 'final')->inRandomOrder()->take($request->final_count ?? 0)->get()->unique('id');
 
                 // Merge all questions into one collection
                 //$questionSet = $prelimQuestions->merge($midtermQuestions)->merge($preFinalQuestions)->merge($finalQuestions);
@@ -254,7 +254,15 @@ class TestGeneratorController extends Controller
     {
 
         $user = Auth::user();
-        $pdf = new CustomTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $widthInches = 8.5; // Width in inches
+        $heightInches = 13; // Height in inches
+        $widthMM = $widthInches * 25.4; // Width in millimeters
+        $heightMM = $heightInches * 25.4; // Height in millimeters
+
+
+        //$pdf = new CustomTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        //$pdf = new CustomTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, 'LEGAL', true, 'UTF-8', false);
+        $pdf = new CustomTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, array($widthMM, $heightMM), true, 'UTF-8', false);
 
         $pdf->selectedDepartment    = $department;
         $pdf->subject_description   = $subject_description;

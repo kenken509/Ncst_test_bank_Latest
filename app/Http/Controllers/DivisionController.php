@@ -39,8 +39,17 @@ class DivisionController extends Controller
 
     public function addDivision()
     {   
-        $existingDep = Department::latest()->get();
+        $allDepartments = Department::withCount('subjectCodes')->latest()->get();
+        
+        $existingDep = [];
 
+        foreach($allDepartments as $dep)
+        {
+            if(!$dep->subject_codes_count)
+            {   
+                $existingDep[] = $dep;
+            } 
+        }
         return inertia('Dashboard/Division/DivisionAdd',[
             'existingDepartment' => $existingDep,
         ]);
