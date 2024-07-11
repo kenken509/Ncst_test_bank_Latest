@@ -540,9 +540,20 @@ class TestGeneratorController extends Controller
     //goods
     private function generateAnswerKeyPdf($set, $answerKey, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
     {
-        
+        $answerKey = [
+            
+            'B','C','D','A','B','C','D','A','B','C',
+            'B','C','D','A','B','C','D','A','B','C',
+            'B','C','D','A','B','C','D','A','B','C',
+            'B','C','D','A','B','C','D','A','B','C',
+            'B','C','D','A','B','C','D','A','B','C',
+        ];
         $user = Auth::user();
-        $pdf = new AnswerKeyPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $widthInches = 8.5; // Width in inches
+        $heightInches = 13; // Height in inches
+        $widthMM = $widthInches * 25.4; // Width in millimeters
+        $heightMM = $heightInches * 25.4; // Height in millimeters
+        $pdf = new AnswerKeyPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, array($widthMM, $heightMM), true, 'UTF-8', false);
 
         $pdf->selectedDepartment    = $department;
         $pdf->subject_description   = $subject_description;
@@ -574,9 +585,10 @@ class TestGeneratorController extends Controller
         $pdf->setCellPadding(1.6,1.6,1.6,1.6);
 
         // Column settings
-        $maxAnswersPerColumn = 25;
+        $maxAnswersPerColumn = 29;
         $maxNumberOfColumns = 8;
         $numColumns = ceil(count($answerKey) / $maxAnswersPerColumn);
+        $pageMultiplier = $pdf->getPage()-1;
 
         $currentColumn = 0;
         if(floor($numColumns) > 8)
@@ -588,12 +600,19 @@ class TestGeneratorController extends Controller
             $columnWidth = floor($pdf->getPageWidth() - 20) / $numColumns; // Adjust the width based on margins
         }
         
-        
+        $newColumn = 0;
+
         for($currentColumn ; $currentColumn < $numColumns; $currentColumn++)
         {
+            
             $startingIndex = $currentColumn*$maxAnswersPerColumn;
+            $addAnswers = 7;
             $endingIndex = $maxAnswersPerColumn;
-
+            
+            
+           
+            
+            
             if($currentColumn < 8)
             {
                 $pdf->SetY(73);
@@ -607,34 +626,51 @@ class TestGeneratorController extends Controller
                     $pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer, 0, 'L', false);
                 }
             }
+            else
+            {
+                // Create the new array based on the specified range
+                $newArray = array_slice($answerKey, $startingIndex, $endingIndex+$addAnswers);
+                if((int)$currentColumn % 8 == 0 )
+                {
+                    
+                    $newColumn = 0;
+                    $testPageBreake = (int)$currentColumn % 4 == 0;
+                    $addedAPage = $pdf->getPage();
+                    $pdf->addPage();
+                    $pdf->SetY(10);
+                    //$pdf->SetX(10);
 
-            // needs update ******
-            // $multiplier = 1;
-            // $layer = 8;
+                    
+                    foreach($newArray as $index => $answer)
+                    {
+                        $pdf->SetX(($newColumn*$columnWidth)+10);
+                        //$pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer . '-C-'. ($newColumn+1) .'-PB-'.$testPageBreake.'-curColl-'.$currentColumn, 0, 'L', false);
+                        $pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer, 0, 'L', false);
+                        
+                    }
 
-            // if($currentColumn >= 8 && $currentColumn % 8 == 0)
-            // {
-                
-            //     $layer = $layer * $multiplier;
-            //     $pdf->addPage();
-            //     $pdf->SetY(10);                
-                
-            //     $multiplier++;
-            // }
+                    
+                }
+                else
+                {
+                    $pdf->SetY(10);
+                    
+                    foreach($newArray as $index => $answer)
+                    {
+                        
+                        $pdf->SetX(($newColumn*$columnWidth)+10);
+                        //$pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer . '-C-'. ($newColumn+1) .'-PB-'.$testPageBreake.'-curColl-'.$currentColumn.'new column', 0, 'L', false);
+                        $pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer , 0, 'L', false);
+                    }
 
-            // if($currentColumn >= 8)
-            // {
+                    
+                }
                 
-            //     $newArray = array_slice($answerKey, $startingIndex+7, 32);
-
-                
-            //     foreach($newArray as $index => $answer)
-            //     {
-            //         $pdf->SetX((($currentColumn-$layer)*$columnWidth)+10);
-            //         $pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer, 1, 'L', false);
-            //     }
+                $newColumn++;
+            }
             
-            // }
+
+           
    
         }   
         
