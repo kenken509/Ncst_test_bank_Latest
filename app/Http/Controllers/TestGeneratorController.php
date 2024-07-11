@@ -540,14 +540,7 @@ class TestGeneratorController extends Controller
     //goods
     private function generateAnswerKeyPdf($set, $answerKey, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
     {
-        $answerKey = [
-            
-            'B','C','D','A','B','C','D','A','B','C',
-            'B','C','D','A','B','C','D','A','B','C',
-            'B','C','D','A','B','C','D','A','B','C',
-            'B','C','D','A','B','C','D','A','B','C',
-            'B','C','D','A','B','C','D','A','B','C',
-        ];
+       
         $user = Auth::user();
         $widthInches = 8.5; // Width in inches
         $heightInches = 13; // Height in inches
