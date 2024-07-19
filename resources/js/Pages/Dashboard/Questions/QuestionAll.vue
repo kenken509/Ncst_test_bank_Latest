@@ -24,7 +24,7 @@
                         
                         <select  v-model="selectedSubjectCode" class=" border-blue-500 rounded-md ">
                             <option value="" selected hidden>
-                                Subject Code
+                                Subject Code 
                             </option>
                             <option v-for="code in data.subjectCodes" :value="code">
                                 {{ code.name }}
@@ -259,7 +259,7 @@
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody v-if="data.problemSets.length() > 0">
                             
                             <tr v-for="(question ,index ) in searchFieldData " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
