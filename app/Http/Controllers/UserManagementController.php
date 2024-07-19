@@ -109,6 +109,7 @@ class UserManagementController extends Controller
             $userToUpdate->save();
 
             DB::commit();
+            
         }
         catch(Exception $e)
         {
