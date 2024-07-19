@@ -24,7 +24,7 @@
                         
                         <select  v-model="selectedSubjectCode" class=" border-blue-500 rounded-md ">
                             <option value="" selected hidden>
-                                Subject Code
+                                Subject Code 
                             </option>
                             <option v-for="code in data.subjectCodes" :value="code">
                                 {{ code.name }}
@@ -50,10 +50,7 @@
                             </div>
                             
                             
-                            <!-- <div class="flex items-center gap-4 hover:cursor-pointer">
-                                <input v-model="allTerm" type="checkbox" id="all" class="hover:cursor-pointer" />
-                                <label for="all" class="hover:cursor-pointer">All</label>
-                            </div>  -->
+                            
                         </div>
                     </div>
                     
@@ -140,11 +137,7 @@
                                 <label for="final" class="hover:cursor-pointer">Final</label>
                             </div>
                             
-                            
-                            <!-- <div class="flex items-center gap-4 hover:cursor-pointer">
-                                <input v-model="allTerm" type="checkbox" id="all" class="hover:cursor-pointer" />
-                                <label for="all" class="hover:cursor-pointer">All</label>
-                            </div>  -->
+                          
                         </div>
                         <div class="flex items-center gap-2">
                             <span>
@@ -159,7 +152,7 @@
                 
                 <div class=" items-center mb-2 gap-2">
                     
-                    <div class=" flex flex-col w-full " ><!--andito ako 1-->
+                    <div class=" flex flex-col w-full " >
                         <button @click="handleProblemSetButtonClicked" v-if="user.role === 'admin'" type="button" class="text-center btn-primary p-2 w-full hover:cursor-pointer">+ Problem Set</button>
                         <button @click="handleAddQuestionModal" type="button" class="btn-primary p-2 w-full">+ New</button>
                     </div>
@@ -259,7 +252,7 @@
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody v-if="data.problemSets.length() > 0">
                             
                             <tr v-for="(question ,index ) in searchFieldData " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
@@ -718,8 +711,10 @@ onMounted(()=>{ // andito ako mounted
         isAdmin.value = true;
     }
     
+    //debug here >>>>>>>>>>>>>>>>>
     selectedSubjectCode.value = data.subjectCodes[0]
-    filteredQuestionByCode.value = selectedSubjectCode.value.questions
+    filteredQuestionByCode.value = selectedSubjectCode.value ? '' : selectedSubjectCode.value.questions 
+    //debug here >>>>>>>>>>>>>>>>>
     successAlertCounter.value = 0 
     selectedTerm.value = []
     if(localStorage.getItem('selectedTerm'))
