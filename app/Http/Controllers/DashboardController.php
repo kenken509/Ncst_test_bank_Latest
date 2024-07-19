@@ -10,14 +10,16 @@ class DashboardController extends Controller
 {
     public function showDashboard()
     {
-        $adminsCount    = User::where('role','admin')->orWhere('role','co-admin')->count();
+        $adminsCount    = User::where('role','admin')->count();
         $depHeadCount   = User::where('role','department head')->count();
         $facultyCount   = User::where('role', 'faculty')->count();
+        $coAdminsCount  = User::where('role', 'co-admin')->count();
+        $usersCount     = User::all()->count();
         $questionsCount = Question::all()->count();
         
         $userQuestionCount = User::withCount('questions')
                                 ->orderBy('questions_count','asc')
-                                ->take(5)
+                                ->take(10)
                                 ->get();
         
         return inertia('Dashboard/Dashboard/Dashboard',[
@@ -25,7 +27,9 @@ class DashboardController extends Controller
             'depHeadCount'  => $depHeadCount,
             'facultyCount'  => $facultyCount,
             'questionsCount'=> $questionsCount,
-            'userQuestionCount' => $userQuestionCount
+            'userQuestionCount' => $userQuestionCount,
+            'coAdminsCount' => $coAdminsCount,
+            'usersCount'    => $usersCount,
         ]);
     }
 
