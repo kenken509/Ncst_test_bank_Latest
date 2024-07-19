@@ -21,9 +21,145 @@
             
             <!-- mobile screen-->
             <!--TABLE--> 
-            
+            <div v-if="!searchField">
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-200 uppercase bg-blue-900 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">No.</th>
+                                <th scope="col" class="px-6 py-3">ID</th>
+                                <th scope="col" class="px-6 py-3">Question</th>
+                                <th scope="col" class="px-6 py-3">Term</th>
+                                <th scope="col" class="px-6 py-3">Type</th>
+                                <th scope="col" class="px-6 py-3">Author</th>
+                                <th scope="col" class="px-6 py-3">Date</th>
+                                
+                            
 
-           
+                                
+                                <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr v-for="(question ,index ) in getDisplayedQuestions() " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ index + 1 + (currentPage - 1) * itemsPerPage }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ question.id }}
+                                </th>
+                                <th scope="row" class="  px-2 py-4 font-medium text-gray-900 text-justify dark:text-white">
+                                    {{ question.question }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ question.term }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ question.type }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ question.author.name }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ formatDate(question.created_at) }}
+                                </th>
+                            
+                            
+                                <td  v-if="$page.props.user.role === 'admin'" class="px-6 py-4 text-center ">
+                                    <div  class="flex flex-col   lg:flex-row lg:justify-center  lg:space-x-4">
+                                        <button @click="showQuestionInfoModal(question)" class="btn-primary p-2">Info</button>
+                                        <button  @click="deleteConfirmation(question.id)" class=" btn-warning my-2">Delete </button>
+                                        <Link :href="route('question.update.show',{id:question.id})" type="button" class="btn-success my-2">
+                                            Update
+                                        </Link>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center mt-4 items-center gap-4">
+                    <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"class="btn-pagination flex items-center gap-1">
+                        <i class="pi pi-angle-double-left"></i> Prev
+                    </button>
+                    <div>Page {{ currentPage }} of {{ totalPages }}</div>
+                    <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages" class="btn-pagination flex items-center gap-1">
+                        Next <i class="pi pi-angle-double-right"></i> 
+                    </button>
+                </div>
+            </div>
+
+            <div v-else>
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-200 uppercase bg-blue-900 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">No.</th>
+                                <th scope="col" class="px-6 py-3">ID</th>
+                                <th scope="col" class="px-6 py-3">Question</th>
+                                <th scope="col" class="px-6 py-3">Term</th>
+                                <th scope="col" class="px-6 py-3">Type</th>
+                                <th scope="col" class="px-6 py-3">Author</th>
+                                <th scope="col" class="px-6 py-3">Date</th>
+                                
+                                
+
+                                
+                                <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody v-if="data.problemSets.length() > 0">
+                            
+                            <tr v-for="(question ,index ) in searchFieldData " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ index + 1 + (currentPageSearch - 1) * itemsPerPageSearch }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ question.id }}
+                                </th>
+                                <th scope="row" class="  px-2 py-4 font-medium text-gray-900 text-justify dark:text-white">
+                                {{ question.question }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ question.term }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ question.type }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ question.author.name }}
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ formatDate(question.created_at) }}
+                                </th>
+                            
+                            
+                                <td  v-if="$page.props.user.role === 'admin'" class="px-6 py-4 text-center ">
+                                    <div  class="flex flex-col   lg:flex-row lg:justify-center  lg:space-x-4">
+                                        <button @click="showQuestionInfoModal(question)" class="btn-primary p-2">Info</button>
+                                        <button  @click="deleteConfirmation(question.id)" class=" btn-warning my-2">Delete </button>
+                                        <Link :href="route('question.update.show',{id:question.id})" type="button" class="btn-success my-2">
+                                            Update
+                                        </Link>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center gap-4 mt-4 items-center">
+                    <button @click="goToPageSearch(currentPageSearch - 1)" :disabled="currentPageSearch === 1" class="btn-pagination flex items-center gap-1">
+                        <i class="pi pi-angle-double-left"></i> Prev 
+                    </button>
+                    <div>Page {{ currentPageSearch }} of {{ totalPagesSearch }}</div>
+                    <button @click="goToPageSearch(currentPageSearch + 1)" :disabled="currentPageSearch === totalPagesSearch" class="btn-pagination flex items-center gap-1">
+                        Next <i class="pi pi-angle-double-right"></i>
+                    </button>
+                </div>
+            </div>
         
             <!--TABLE-->
          
