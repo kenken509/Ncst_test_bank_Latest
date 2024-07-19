@@ -712,8 +712,8 @@ onMounted(()=>{ // andito ako mounted
     }
     
     //debug here >>>>>>>>>>>>>>>>>
-    selectedSubjectCode.value = data.subjectCodes[0]
-    filteredQuestionByCode.value = selectedSubjectCode.value ? '' : selectedSubjectCode.value.questions 
+    //selectedSubjectCode.value = data.subjectCodes[0]
+    //filteredQuestionByCode.value = selectedSubjectCode.value ? '' : selectedSubjectCode.value.questions 
     //debug here >>>>>>>>>>>>>>>>>
     successAlertCounter.value = 0 
     selectedTerm.value = []

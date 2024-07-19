@@ -17,12 +17,12 @@
             <div class=" hidden md:block">
                 <div class="grid grid-cols-10 items-center my-2 ">
                     <div class="col-span-1">
-                        <label>Subject Code: </label>
+                        <label>Subject Code:</label>
                     </div>
                     
                     <div class="flex  col-span-8  gap-8 ">
                         
-                        <select  v-model="selectedSubjectCode" class=" border-blue-500 rounded-md ">
+                        <select  v-model="selectedSubjectCode" @change="handleSubjectCodeChange" class=" border-blue-500 rounded-md ">
                             <option value="" selected hidden>
                                 Subject Code 
                             </option>
@@ -92,9 +92,9 @@
             <div class="flex  flex-col md:hidden ">
                 <div class="flex flex-col">
                     <div class="flex flex-col gap-3 mb-4">
-                        <label>Subject Code: </label>
+                        <label>Subject Code:</label>
 
-                        <select  v-model="selectedSubjectCode" class=" border-blue-500 rounded-md ">
+                        <select  v-model="selectedSubjectCode" @change="handleSubjectCodeChange" class=" border-blue-500 rounded-md ">
                             <option value="" selected hidden>
                                 Subject Code
                             </option>
@@ -252,7 +252,7 @@
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody v-if="data.problemSets.length() > 0">
+                        <tbody >
                             
                             <tr v-for="(question ,index ) in searchFieldData " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
@@ -705,16 +705,17 @@ const data = defineProps({
 
 const user = usePage().props.user
 const isAdmin = ref(false);
+
+
 onMounted(()=>{ // andito ako mounted
     if(user.role === 'admin')
     {
         isAdmin.value = true;
     }
     
-    //debug here >>>>>>>>>>>>>>>>>
-    //selectedSubjectCode.value = data.subjectCodes[0]
-    //filteredQuestionByCode.value = selectedSubjectCode.value ? '' : selectedSubjectCode.value.questions 
-    //debug here >>>>>>>>>>>>>>>>>
+    
+
+
     successAlertCounter.value = 0 
     selectedTerm.value = []
     if(localStorage.getItem('selectedTerm'))
@@ -743,20 +744,25 @@ onMounted(()=>{ // andito ako mounted
         })
     }   
     
+    if(localStorage.getItem('subjectCode'))
+    {
+        let id = JSON.parse(localStorage.getItem('subjectCode'))
+        
+        if(data.subjectCodes.length)
+        {
+            data.subjectCodes.forEach((val)=>{
+                if(val.id === id)
+                {
+                    selectedSubjectCode.value = val
+                    return;
+                }
+            } )
+        }
+        
+    }
     checkDataDisplay();
 
-    
-    
-    // console.log('selectedTerm')
-    // console.log(selectedTerm.value)
-
-    // console.log('localStorage')
-    // console.log(localStorage.getItem('selectedTerm'));
-
-    //console.log(prelim.value)
 })
-
-
 
 
 
@@ -814,6 +820,10 @@ watch(selectedSubjectCode, (val)=>{
 
 })
 
+function handleSubjectCodeChange(event)
+{
+    localStorage.setItem('subjectCode',selectedSubjectCode.value.id);
+}
 const myArray = [
     {
         name: 'myPrelim',
@@ -876,6 +886,7 @@ watch(midTerm, (val)=>{
 
     updateFilteredArray()
 });
+
 watch(prefinal, (val)=>{
     if(val)
     {
@@ -1125,6 +1136,13 @@ const deleteConfirmation = (questionId)=>
     const imageUrl  = ref('/storage/images/');
     const addQuestionModal = ref(false)
     const handleAddQuestionModal = ()=>{
+        if(selectedSubjectCode.value === '')
+        {
+            selectedTermValidator.value = 'Subject Code is required.'
+            errorMessage2(selectedTermValidator.value)
+            return
+        }
+
         if(selectedTerm.value.length < 1)
         {
             selectedTermValidator.value = 'Term is required.'
@@ -1255,10 +1273,7 @@ const textTabClicked = ()=>{
 const fileInput = ref('')
 
 
-//watchers
-watch(selectedSubjectCode,(code)=>{
-    form.subject_code_id = code.id
-})
+
 
 
 //image logic

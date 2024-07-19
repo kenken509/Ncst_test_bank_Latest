@@ -606,6 +606,11 @@ const logout = async () => {
 // Function to clear localStorage item on logout
 const clearLocalStorageOnLogout = () => {
   localStorage.removeItem('dataDisplayedOnce'); // Remove the item from localStorage
+  
+  if(localStorage.getItem('subjectCode'))
+  {
+    localStorage.removeItem('subjectCode');
+  }
 };
 
 //backup logic
