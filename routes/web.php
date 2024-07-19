@@ -121,3 +121,6 @@ Route::controller(ResetPasswordController::class)->group(function(){
     Route::get('/pasword-reset/verify/{token}','verifyResetEmail')->name('reset.password.verify.email');
     Route::post('/password-reset/store', 'resetPassword')->name('reset.password.store');
 });
+
+
+
