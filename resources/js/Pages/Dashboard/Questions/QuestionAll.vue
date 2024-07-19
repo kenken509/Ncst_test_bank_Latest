@@ -110,7 +110,7 @@
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody v-if="data.problemSets.length() > 0">
+                        <tbody >
                             
                             <tr v-for="(question ,index ) in searchFieldData " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
