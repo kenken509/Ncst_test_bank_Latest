@@ -21,10 +21,10 @@
       </div>
     </div>
     <div class="flex flex-col items-center mt-6 text-gray-500">
-      <span class="content-center">
-        Copyright © {{ currentYear }} National College of Science and Technology.
+      <span class=" text-center">
+        Copyright © {{ currentYear }} National College of Science and Technology, Information Technology Office.
       </span>
-      <span class=" content-center">
+      <span class=" text-center">
         Developed by <a href="https://www.facebook.com/kenortz.kenneth" target="_blank" class="text-blue-500">Aries Bawar LLesis</a> as an Internship Project.
       </span>
     </div>
