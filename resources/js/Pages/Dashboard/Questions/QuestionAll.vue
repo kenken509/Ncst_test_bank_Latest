@@ -718,8 +718,10 @@ onMounted(()=>{ // andito ako mounted
         isAdmin.value = true;
     }
     
+    //debug here >>>>>>>>>>>>>>>>>
     selectedSubjectCode.value = data.subjectCodes[0]
-    filteredQuestionByCode.value = selectedSubjectCode.value.questions
+    filteredQuestionByCode.value = selectedSubjectCode.value ? '' : selectedSubjectCode.value.questions 
+    //debug here >>>>>>>>>>>>>>>>>
     successAlertCounter.value = 0 
     selectedTerm.value = []
     if(localStorage.getItem('selectedTerm'))
