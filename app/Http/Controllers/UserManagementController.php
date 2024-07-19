@@ -38,7 +38,7 @@ class UserManagementController extends Controller
     public function storeUser(Request $request)
     {   
         
-        $defaultPassword = 'Ncst1234#';
+        $defaultPassword = Hash::make('Ncst1234#');
         $newUser = new User();
         
         $request->validate([
@@ -51,13 +51,14 @@ class UserManagementController extends Controller
 
             $newUser->name = $request->name;
             $newUser->email = $request->email;
-            $newUser->password = Hash::make($defaultPassword);
+            $newUser->password = $defaultPassword;
             $newUser->role = $request->role;
             $newUser->department_id = $request->department;
             $newUser->division_id = $request->division_id; 
             $newUser->save();
 
             DB::commit();
+            
         }
         catch(Exception $e)
         {
@@ -67,7 +68,7 @@ class UserManagementController extends Controller
             return redirect()->back()->with('error', 'Failed to create new user!');
         }
         
-
+        dd($defaultPassword);
         return redirect()->route('users.show')->with('success', 'Successfully created new user');
     }
 
