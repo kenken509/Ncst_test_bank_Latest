@@ -30,40 +30,42 @@
 
         <div class="flex gap-2 ">
             
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-10 w-full border-gray-500 border">
-                <div class="w-full flex justify-center border rounded-t-md bg-blue-900 border-gray-500 text-gray-800">
+            <div class="relative  overflow-x-auto shadow-md sm:rounded-lg mt-10 w-full border-gray-500 border">
+                <div class="  flex justify-center border rounded-t-md bg-blue-900 border-gray-500 text-gray-800 w-full">
                     <span class="text-[20px] font-semibold text-white p-1">LOWEST CONTRIBUTIONS</span>
                 </div>
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
-                    <thead class="text-xs text-gray-200 uppercase bg-blue-900 dark:bg-gray-700 dark:text-gray-400">
-                        <tr scope="row">
-                            <th scope="col" class="px-6 py-3">No.</th>
-                            <th scope="col" class="px-6 py-3">User</th>
-                            <th scope="col" class="px-6 py-3">Email</th>
-                            <th scope="col" class="px-6 py-3">Role</th>
-                            <th scope="col" class="px-6 py-3">Questions</th>
-                        </tr>
-                    </thead>
-                    <tbody v-for="(user,index) in userQuestionCount" :key="index">
-                        <tr scope="row">
-                            <td scope="col" class="px-6 py-3 text-gray-800">
-                                {{ index+1 }}
-                            </td>
-                            <td scope="col" class="px-6 py-3 text-gray-800">
-                                {{ user.name }} 
-                            </td>
-                            <td scope="col" class="px-6 py-3 text-gray-800">
-                            {{ user.email }}
-                            </td>
-                            <td scope="col" class="px-6 py-3 text-gray-800">
-                            {{ user.role }}
-                            </td>
-                            <td scope="col" class="px-6 py-3 text-gray-800">
-                                {{ user.questions_count }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="w-full overflow-x-auto">
+                    <table class="min-w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+                        <thead class="text-xs text-gray-200 uppercase bg-blue-900 dark:bg-gray-700 dark:text-gray-400">
+                            <tr scope="row">
+                                <th scope="col" class="px-6 py-3">No.</th>
+                                <th scope="col" class="px-6 py-3">User</th>
+                                <th scope="col" class="px-6 py-3">Email</th>
+                                <th scope="col" class="px-6 py-3">Role</th>
+                                <th scope="col" class="px-6 py-3">Questions</th>
+                            </tr>
+                        </thead>
+                        <tbody v-for="(user,index) in userQuestionCount" :key="index">
+                            <tr scope="row">
+                                <td scope="col" class="px-6 py-3 text-gray-800">
+                                    {{ index+1 }}
+                                </td>
+                                <td scope="col" class="px-6 py-3 text-gray-800">
+                                    {{ user.name }} 
+                                </td>
+                                <td scope="col" class="px-6 py-3 text-gray-800">
+                                {{ user.email }}
+                                </td>
+                                <td scope="col" class="px-6 py-3 text-gray-800">
+                                {{ user.role }}
+                                </td>
+                                <td scope="col" class="px-6 py-3 text-gray-800">
+                                    {{ user.questions_count }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="w-full max-h-[500px] flex justify-center items-center border border-gray-500 mt-10 rounded-lg shadow-md">
                 <Pie :data="chartData" :options="chartOptions" class="p-2" />
