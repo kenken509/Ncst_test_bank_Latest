@@ -68,7 +68,7 @@ class UserManagementController extends Controller
             return redirect()->back()->with('error', 'Failed to create new user!');
         }
         
-        dd($defaultPassword);
+       
         return redirect()->route('users.show')->with('success', 'Successfully created new user');
     }
 
