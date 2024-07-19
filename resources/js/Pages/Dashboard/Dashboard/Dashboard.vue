@@ -30,7 +30,7 @@
 
         <div class="flex gap-2 ">
             
-            <div class="relative overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg mt-10 w-full border-gray-500 border">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-10 w-full border-gray-500 border">
                 <div class="w-full flex justify-center border rounded-t-md bg-blue-900 border-gray-500 text-gray-800">
                     <span class="text-[20px] font-semibold text-white p-1">LOWEST CONTRIBUTIONS</span>
                 </div>
