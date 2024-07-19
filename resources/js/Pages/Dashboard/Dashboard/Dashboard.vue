@@ -28,14 +28,14 @@
         </div>
         <!--users count-->
 
-        <div class="flex gap-2 ">
+        <div class="flex gap-2 max-h-[500px]">
             
-            <div class="relative  overflow-x-auto shadow-md sm:rounded-lg mt-10 w-full border-gray-500 border">
+            <div class="relative ] overflow-x-auto shadow-md sm:rounded-lg mt-10 w-full border-gray-500 border">
                 <div class="  flex justify-center border rounded-t-md bg-blue-900 border-gray-500 text-gray-800 w-full">
                     <span class="text-[20px] font-semibold text-white p-1">LOWEST CONTRIBUTIONS</span>
                 </div>
-                <div class="w-full overflow-x-auto">
-                    <table class="min-w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+                <div class="w-full h-full overflow-x-auto">
+                    <table class="min-w-full h-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
                         <thead class="text-xs text-gray-200 uppercase bg-blue-900 dark:bg-gray-700 dark:text-gray-400">
                             <tr scope="row">
                                 <th scope="col" class="px-6 py-3">No.</th>
@@ -63,6 +63,8 @@
                                     {{ user.questions_count }}
                                 </td>
                             </tr>
+                            
+                            
                         </tbody>
                     </table>
                 </div>
