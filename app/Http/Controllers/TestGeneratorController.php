@@ -226,7 +226,7 @@ class TestGeneratorController extends Controller
 
             // Create and save the zip file
             $zipFilename = $this->createZip($pdfFiles, $subject_code_name, $request->term);
-            $zipFilePath = storage_path('app/public/pdfs/' . $zipFilename);
+            $zipFilePath = storage_path('app/public/Pdfs/' . $zipFilename);
 
             // Ensure zip file exists
             if (!file_exists($zipFilePath)) {
@@ -238,7 +238,7 @@ class TestGeneratorController extends Controller
             // Log successful zip creation
             Log::info("Zip file created: $zipFilename");
 
-            $downloadUrl = Storage::url('public/pdfs/' . $zipFilename);
+            $downloadUrl = Storage::url('public/Pdfs/' . $zipFilename);
             
             return redirect()->back()->with('donwloadUrl', $downloadUrl);
         } catch (\Exception $e) {
@@ -531,7 +531,7 @@ class TestGeneratorController extends Controller
 
         //$set, $questionSet, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr
         $filename = $term.'-'.$subject_code_name.'-'.$set. '-' . $date->format('d-m-Y-H-i-s') . '.pdf';
-        $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
+        $pdf->Output(storage_path('app/public/Pdfs/' . $filename), 'F');
 
         return $filename;
     }
@@ -670,209 +670,21 @@ class TestGeneratorController extends Controller
     
         $date = Carbon::now();
         $filename = $term.'-'.$subject_code_name.'-'.'ANSWER-'.$set.'-' . $date->format('d-m-Y-H-i-s') . '.pdf';
-        $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
+        $pdf->Output(storage_path('app/public/Pdfs/' . $filename), 'F');
 
         return $filename;
     }
 
-    // for debugging >>>>>>>>
-    // private function generateAnswerKeyPdf($set, $answerKey, $subject_code_name, $subject_description, $department, $semester, $term, $schoolYr)
-    // {
-        
-    //     $answerKey = [
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //         'A','B','C','D','A','B','C','D','C','D',
-    //     ];
-    //     $user = Auth::user();
-    //     $pdf = new AnswerKeyPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-    //     $pdf->selectedDepartment    = $department;
-    //     $pdf->subject_description   = $subject_description;
-    //     $pdf->selectedTerm          = $term;
-    //     $pdf->selectedSubjectCode   = $subject_code_name;
-    //     $pdf->selectedSemester      = $semester;
-    //     $pdf->selectedSchoolYear    = $schoolYr;
-    //     $pdf->set                   = $set;
-
-    //     $pdf->SetCreator(PDF_CREATOR);
-    //     $pdf->SetAuthor($user->role . ' ' . $user->name);
-    //     $pdf->SetTitle($term.' Set '.$set.' Answer Key in ' . $subject_code_name);
-    //     $pdf->SetSubject('Generated Exam Paper');
-    //     $pdf->SetKeywords('TCPDF, PDF, exam, test, paper');
-
-    //     $pdf->SetMargins(10, 10, 10, true);
-    //     $pdf->setPrintHeader(true);
-    //     $pdf->setPrintFooter(true);
-        
-    //     $pdf->SetAutoPageBreak(true, 10);
-    //     $pdf->setFontSubsetting(true);
-    //     $pdf->SetFont('helvetica', '', 12);
-
-    //     $pdf->AddPage();
-
-    //     // Write header information
-    //     $pdf->SetY(73);
-
-    //     $pdf->setCellPadding(1.5,1.5,1.5,1.5);
-
-    //     // Column settings
-    //     $maxAnswersPerColumn = 25;
-    //     $maxNumberOfColumns = 8;
-    //     $numColumns = ceil(count($answerKey) / $maxAnswersPerColumn);
-
-        
-    //     $currentColumn = 0;
-
-    //     // page width = 290
-    //     if(floor($numColumns) > 8)
-    //     {
-    //         $columnWidth = floor($pdf->getPageWidth() - 20) / $maxNumberOfColumns; // Adjust the width based on margins
-    //     }
-    //     else
-    //     {   
-    //         $columnWidth = floor($pdf->getPageWidth() - 20) / $numColumns; // Adjust the width based on margins
-    //     }
-        
-        
-    //     for($currentColumn ; $currentColumn < $numColumns; $currentColumn++)
-    //     {
-           
-    //         $startingIndex = $currentColumn*$maxAnswersPerColumn;
-    //         $endingIndex = $maxAnswersPerColumn;
-
-    //         // Create the new array based on the specified range
-    //         $newArray = array_slice($answerKey, $startingIndex, $endingIndex);
-
-    //         $x = 0;
-    //         $pageW = $pdf->getPageWidth() -10;
-            
-    //         if($pdf->getPage() == 1)
-    //         {
-    //             $pdf->SetY(73);
-
-    //             if($currentColumn > 7)
-    //             {
-    //                 $pdf->SetX((($currentColumn-($pdf->getPage() * 8))*$columnWidth)+10);
-    //             }
-    //             else
-    //             {
-    //                 $pdf->SetX(($currentColumn*$columnWidth)+10);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $pdf->SetY(10);
-
-    //             if($currentColumn > 7)
-    //             {
-    //                 $pdf->SetX((($currentColumn-($pdf->getPage() * 8))*$columnWidth)+10);
-    //             }
-    //             else
-    //             {
-    //                 $pdf->SetX(($currentColumn*$columnWidth)+10);
-    //             }
-                
-    //         }
-
-    //         $addedAPage = false;
-
-    //         foreach($newArray as $index => $answer)
-    //         {
-
-                
-
-    //             $x = $pdf->GetX();
-    //             if(($x + $columnWidth) > $pageW)
-    //             {
-    //                 $pdf->addPage();
-    //                 $pdf->SetX(10);
-                    
-    //             }
-
-
-    //             $pdf->MultiCell($columnWidth - 5, 5, (($currentColumn*$maxAnswersPerColumn)+($index + 1)) . '. ' . $answer, 1, 'L', false);
-    //         }
-   
-    //     }   
-        
     
-    //     $date = Carbon::now();
-    //     $filename = $term.'-'.$subject_code_name.'-'.'ANSWER-'.$set.'-' . $date->format('d-m-Y-H-i-s') . '.pdf';
-    //     $pdf->Output(storage_path('app/public/pdfs/' . $filename), 'F');
-
-    //     return $filename;
-    // }
-
-    
-
-
-
-
-    
-
-
-
     private function createZip($files , $subject_code, $term)
     {
         $zip = new ZipArchive;
         $date = Carbon::now();
         $zipFilename = ucFirst($term).'_Exam_'.$subject_code.'_'. $date->format('d-m-Y-H-i-s') . '.zip';
     
-        if ($zip->open(storage_path('app/public/pdfs/' . $zipFilename), ZipArchive::CREATE) === TRUE) {
+        if ($zip->open(storage_path('app/public/Pdfs/' . $zipFilename), ZipArchive::CREATE) === TRUE) {
             foreach ($files as $file) {
-                $filePath = storage_path('app/public/pdfs/' . $file);
+                $filePath = storage_path('app/public/Pdfs/' . $file);
                 if (file_exists($filePath)) {
                     $zip->addFile($filePath, basename($filePath));
                 }
@@ -899,19 +711,5 @@ class TestGeneratorController extends Controller
 
     }
 
-    // public function deleteFolderContents()
-    // {
-    //     $directory = public_path('storage/Pds');
-
-    //     // Check if the directory exists
-    //     if (File::exists($directory)) {
-    //         // Delete the directory and its contents
-    //         File::deleteDirectory($directory);
-
-    //         // Recreate the empty directory if needed
-    //         File::makeDirectory($directory, 0755, true, true);
-    //     }
-
-    //     return 'Directory contents deleted successfully.';
-    // }
+    
 }
