@@ -14,14 +14,156 @@
         <div v-if="problemSetForm.errors.content" > {{ errorMessage(problemSetForm.errors.content) }}</div>
         <div v-if="$page.props.flash.success">{{ successMessage($page.props.flash.success) }}</div>
              <!-- md screen-->
-            
+            <div v-if="data.subjectCodes.length && data.problemSets.length" class=" hidden md:block">
+                <div class="grid grid-cols-10 items-center my-2 ">
+                    <div class="col-span-1">
+                        <label>Subject Code: </label>
+                    </div>
+                    
+                    <div class="flex  col-span-8  gap-8 ">
+                        
+                        <select  v-model="selectedSubjectCode" class=" border-blue-500 rounded-md ">
+                            <option value="" selected hidden>
+                                Subject Code 
+                            </option>
+                            <option v-for="code in data.subjectCodes" :value="code">
+                                {{ code.name }}
+                            </option>
+                        </select>
+                        <div class="flex flex-row  gap-3" > 
+                            <span class="flex items-center"> Term: </span>   
+                            <div class="flex items-center gap-4 hover:cursor-pointer  " :class="{'pointer-events-none ': allTermsSelected}">
+                                <input v-model="prelim" type="checkbox" id="prelim" class="hover:cursor-pointer "  />
+                                <label for="prelim" class="hover:cursor-pointer" >Prelim</label>
+                            </div>
+                            <div class="flex items-center gap-4 hover:cursor-pointer" :class="{'pointer-events-none ': allTermsSelected}">
+                                <input v-model="midTerm" type="checkbox" id="midterm" class="hover:cursor-pointer" />
+                                <label for="midterm" class="hover:cursor-pointer">Midterm</label>
+                            </div>
+                            <div class="flex items-center gap-4 hover:cursor-pointer" :class="{'pointer-events-none ': allTermsSelected}">
+                                <input v-model="prefinal" type="checkbox" id="prefinal" class="hover:cursor-pointer" />
+                                <label for="prefinal" class="hover:cursor-pointer">Prefinal</label>
+                            </div>
+                            <div class="flex items-center gap-4 hover:cursor-pointer" :class="{'pointer-events-none ': allTermsSelected}">
+                                <input v-model="final" type="checkbox" id="final" class="hover:cursor-pointer" />
+                                <label for="final" class="hover:cursor-pointer">Final</label>
+                            </div>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                    
+                   
+                    <div class="flex items-center gap-2">
+                        <span>
+                            Total Count: 
+                        </span>
+                        <span >
+                            {{ questionTotalCoumt }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class=" grid grid-cols-10 items-center mb-2 gap-2">
+                    <div class="col-span-1">
+                        <span class="flex flex-nowrap">
+                            Description: 
+                        </span>
+                    </div>
+                    
+                    <div class="col-span-6 w-full" :class="{'col-span-8':!isAdminOrCoAdmin, 'col-span-6':isAdminOrCoAdmin}" >
+                        <input type="text" :value="selectedSubjectCode.description" class="w-full bg-gray-100 rounded-md" disabled />
+                        <span class="col-span-1">
+                        </span>
+                    </div>
+                    <div class=" flex w-full gap-2 " :class="{'col-span-1':!isAdminOrCoAdmin, 'col-span-3':isAdminOrCoAdmin }"><!--andito ako 1-->
+                        <button @click="handleProblemSetButtonClicked" v-if="user.role === 'admin'" type="button" class="text-center btn-primary p-2 w-full hover:cursor-pointer">+ Problem Set</button>
+                        <button @click="handleAddQuestionModal" type="button" class="btn-primary p-2 w-full">+ New</button>
+                    </div>
+                    
+                </div>
+                
+                
+            </div>
              <!-- md screen-->
 
             <!-- mobile screen-->
-            
+            <div v-if="data.subjectCodes.length && data.problemSets.length" class="flex  flex-col md:hidden ">
+                <div class="flex flex-col">
+                    <div class="flex flex-col gap-3 mb-4">
+                        <label>Subject Code: </label>
+
+                        <select  v-model="selectedSubjectCode" class=" border-blue-500 rounded-md ">
+                            <option value="" selected hidden>
+                                Subject Code
+                            </option>
+                            <option v-for="code in data.subjectCodes" :value="code">
+                                {{ code.name }}
+                            </option>
+                        </select>
+
+                        <div class="col-span-1">
+                            <span class="flex flex-nowrap">
+                                Description: 
+                            </span>
+                        </div>
+                        
+                        <div class="col-span-6 w-full" :class="{'col-span-8':!isAdminOrCoAdmin, 'col-span-6':isAdminOrCoAdmin}" >
+                            <input type="text" :value="selectedSubjectCode.description" class="w-full bg-gray-100 rounded-md" disabled />
+                            <span class="col-span-1">
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex  flex-col  gap-3 mb-4 ">
+                        
+                        <div class="flex flex-row  gap-3" > 
+                            <span class="flex items-center"> Term: </span>   
+                            <div class="flex items-center gap-4 hover:cursor-pointer  " :class="{'pointer-events-none ': allTermsSelected}">
+                                <input v-model="prelim" type="checkbox" id="prelim" class="hover:cursor-pointer "  />
+                                <label for="prelim" class="hover:cursor-pointer" >Prelim</label>
+                            </div>
+                            <div class="flex items-center gap-4 hover:cursor-pointer" :class="{'pointer-events-none ': allTermsSelected}">
+                                <input v-model="midTerm" type="checkbox" id="midterm" class="hover:cursor-pointer" />
+                                <label for="midterm" class="hover:cursor-pointer">Midterm</label>
+                            </div>
+                            <div class="flex items-center gap-4 hover:cursor-pointer" :class="{'pointer-events-none ': allTermsSelected}">
+                                <input v-model="prefinal" type="checkbox" id="prefinal" class="hover:cursor-pointer" />
+                                <label for="prefinal" class="hover:cursor-pointer">Prefinal</label>
+                            </div>
+                            <div class="flex items-center gap-4 hover:cursor-pointer" :class="{'pointer-events-none ': allTermsSelected}">
+                                <input v-model="final" type="checkbox" id="final" class="hover:cursor-pointer" />
+                                <label for="final" class="hover:cursor-pointer">Final</label>
+                            </div>
+                            
+                          
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span>
+                                Total Count: 
+                            </span>
+                            <span >
+                                {{ questionTotalCoumt }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class=" items-center mb-2 gap-2">
+                    
+                    <div class=" flex flex-col w-full " >
+                        <button @click="handleProblemSetButtonClicked" v-if="user.role === 'admin'" type="button" class="text-center btn-primary p-2 w-full hover:cursor-pointer">+ Problem Set</button>
+                        <button @click="handleAddQuestionModal" type="button" class="btn-primary p-2 w-full">+ New</button>
+                    </div>
+                    
+                </div>
+                
+                
+            </div>
             <!-- mobile screen-->
             <!--TABLE--> 
-            <div v-if="!searchField">
+            <div  v-if="!searchField">
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-200 uppercase bg-blue-900 dark:bg-gray-700 dark:text-gray-400">
@@ -40,9 +182,9 @@
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody v-if="data.subjectCodes.length && data.problemSets.length" >
                             
-                            <tr v-for="(question ,index ) in getDisplayedQuestions() " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                            <tr  v-for="(question ,index ) in getDisplayedQuestions() " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ index + 1 + (currentPage - 1) * itemsPerPage }}
@@ -110,7 +252,7 @@
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody >
+                        <tbody v-if="searchFieldData.length">
                             
                             <tr v-for="(question ,index ) in searchFieldData " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
@@ -570,7 +712,7 @@ onMounted(()=>{ // andito ako mounted
     }
     
     //debug here >>>>>>>>>>>>>>>>>
-    selectedSubjectCode.value = data.subjectCodes[0]
+    selectedSubjectCode.value = data.subjectCodes.length ? '' : data.subjectCodes[0]
     filteredQuestionByCode.value = selectedSubjectCode.value ? '' : selectedSubjectCode.value.questions 
     //debug here >>>>>>>>>>>>>>>>>
     successAlertCounter.value = 0 
