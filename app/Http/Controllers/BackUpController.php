@@ -23,7 +23,7 @@ class BackUpController extends Controller
     public function download()
     {
         $this->cleanUp();
-        $mysqldumpPath = 'C:/xampp/mysql/bin/mysqldump';
+        $mysqldumpPath = '/usr/bin/mysqldump'; //C:/xampp/mysql/bin/mysqldump << this is on local host
         $database = env('DB_DATABASE');
         $username = env('DB_USERNAME');
         $password = env('DB_PASSWORD');

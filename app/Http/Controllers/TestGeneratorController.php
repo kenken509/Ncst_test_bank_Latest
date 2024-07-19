@@ -710,6 +710,4 @@ class TestGeneratorController extends Controller
         }
 
     }
-
-    
 }
