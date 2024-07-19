@@ -14,7 +14,7 @@
         <div v-if="problemSetForm.errors.content" > {{ errorMessage(problemSetForm.errors.content) }}</div>
         <div v-if="$page.props.flash.success">{{ successMessage($page.props.flash.success) }}</div>
              <!-- md screen-->
-            <div v-if="data.subjectCodes.length && data.problemSets.length" class=" hidden md:block">
+            <div class=" hidden md:block">
                 <div class="grid grid-cols-10 items-center my-2 ">
                     <div class="col-span-1">
                         <label>Subject Code: </label>
@@ -89,7 +89,7 @@
              <!-- md screen-->
 
             <!-- mobile screen-->
-            <div v-if="data.subjectCodes.length && data.problemSets.length" class="flex  flex-col md:hidden ">
+            <div class="flex  flex-col md:hidden ">
                 <div class="flex flex-col">
                     <div class="flex flex-col gap-3 mb-4">
                         <label>Subject Code: </label>
@@ -163,7 +163,7 @@
             </div>
             <!-- mobile screen-->
             <!--TABLE--> 
-            <div  v-if="!searchField">
+            <div v-if="!searchField">
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-200 uppercase bg-blue-900 dark:bg-gray-700 dark:text-gray-400">
@@ -182,9 +182,9 @@
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody v-if="data.subjectCodes.length && data.problemSets.length" >
+                        <tbody>
                             
-                            <tr  v-for="(question ,index ) in getDisplayedQuestions() " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                            <tr v-for="(question ,index ) in getDisplayedQuestions() " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ index + 1 + (currentPage - 1) * itemsPerPage }}
@@ -252,7 +252,7 @@
                                 <th  v-if="isAdmin" scope="col" class="flex justify-center px-6 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody v-if="searchFieldData.length">
+                        <tbody v-if="data.problemSets.length() > 0">
                             
                             <tr v-for="(question ,index ) in searchFieldData " :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 {{ getQuestionTotalCount(filteredQuestionByCode.length) }} 
@@ -712,8 +712,8 @@ onMounted(()=>{ // andito ako mounted
     }
     
     //debug here >>>>>>>>>>>>>>>>>
-    selectedSubjectCode.value = data.subjectCodes.length ? [] : data.subjectCodes[0]
-    filteredQuestionByCode.value = selectedSubjectCode.value ? [] : selectedSubjectCode.value.questions 
+    //selectedSubjectCode.value = data.subjectCodes[0]
+    //filteredQuestionByCode.value = selectedSubjectCode.value ? '' : selectedSubjectCode.value.questions 
     //debug here >>>>>>>>>>>>>>>>>
     successAlertCounter.value = 0 
     selectedTerm.value = []
