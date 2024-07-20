@@ -444,9 +444,35 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
                     </svg>
                 </button>
-                <span class="text-gray-200 pr-2 mr-5">
-                    Welcome back, <span v-if="user.role==='admin'"> {{ capitalizeFirstLetter(user.role) }}</span> {{ capitalizeFirstLetter(user.name) }} 
-                </span>
+                <div class="flex flex-col justify-end ">
+                    <span class="text-gray-200 pr-2 mr-5 text-end md:text-xl">
+                        Welcome back, 
+                        <span>
+                            {{ capitalizeFirstLetter(user.name) }} 
+                        </span>
+                    </span>
+                    <div v-if="user.role === 'admin'" class=" gap-2 justify-end mr-5 pr-2 hidden md:flex">
+                        <span  class="text-role text-gray-200">ADMINISTRATOR</span>
+                    </div>
+                    <div v-if="user.role === 'co-admin'" class=" gap-2 justify-end mr-5 pr-2 hidden md:flex">
+                        <span class="text-role text-gray-200">CO-ADMIN</span>
+                    </div>
+                    <div v-if="user.role === 'faculty'" class=" gap-2 justify-end mr-5 pr-2 hidden md:flex">
+                        <span v-if="user.division" class="text-role text-gray-200">{{ user.division.name.toUpperCase() }}</span>
+                        <span v-else class="text-role text-gray-200">{{ user.department.name.toUpperCase() }}</span>
+                        <span class="text-role text-gray-200">{{ user.role.toUpperCase() }}</span>
+                    </div>
+                    <div v-if="user.role === 'department head'" class=" gap-2 justify-end mr-5 pr-2 hidden md:flex">
+                        <span v-if="user.division" class="text-role text-gray-200">{{ user.division.name.toUpperCase() }} </span>
+                        <span v-else class="text-role text-gray-200">{{ user.department.name.toUpperCase() }}</span>
+                        <span class="text-role text-gray-200">{{ user.role.toUpperCase() }}</span>
+                    </div>
+
+
+                    
+                    
+                </div>
+                
             </div>
             <div class="p-8  ">
                 <slot></slot>
