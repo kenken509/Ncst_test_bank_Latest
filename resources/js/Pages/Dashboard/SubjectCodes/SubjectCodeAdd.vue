@@ -35,7 +35,7 @@
                         {{ div.name }}
                     </option>
                 </select>
-                {{ descriptionLengthValidator }}
+                
                 <label for="description" class="my-2 text-lg font-semibold text-gray-600">Description : </label>
                 <span v-if="descriptionLengthValidator" class="text-red-500">{{ descriptionLengthValidator }}</span>
                 <textarea required v-model="form.description" id="description" name="subDescription" rows="4" cols="10" class="bg-gray-50 border border-blue-500 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2 hover:cursor-pointer">
@@ -101,7 +101,7 @@ const validator = ()=>{
     if(form.description.length > 50)
     {
         
-        descriptionLengthValidator.value = "Description could not exceed 20 characters."
+        descriptionLengthValidator.value = "Description could not exceed 50 characters."
     }
     else
     {

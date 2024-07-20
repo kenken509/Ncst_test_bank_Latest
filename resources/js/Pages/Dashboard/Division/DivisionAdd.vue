@@ -4,7 +4,7 @@
             <span class="text-[20px] font-bold text-gray-500">Add Division Page</span> 
             
         </div>
-        {{ data.existingDepartment }}
+        
         <div v-if="$page.props.flash.success" >{{ successMessage($page.props.flash.success) }} </div>
         <div v-if="$page.props.flash.error" >{{ errorMessage($page.props.flash.error) }} </div>
         <div class="w-full flex justify-center mt-[100px]">
@@ -15,7 +15,7 @@
                         Information
                     </span>
                     <label for="depName" class="my-2 text-lg font-semibold text-gray-600">Division Name :</label>
-                    <input v-model="form.divisionName" type="text" id="depName" placeholder="Enter division name" class="rounded rounded-lg border border-blue-700 my-2" required/>
+                    <input v-model="form.divisionName" type="text" id="depName" placeholder="Enter division name" class="rounded rounded-lg border border-blue-700 my-2" maxlength="30" required/>
                     
                     
                     <label for="departments" class="my-2 text-lg font-semibold text-gray-600" >Department :</label>

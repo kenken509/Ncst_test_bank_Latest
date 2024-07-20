@@ -17,7 +17,7 @@
             <div class="flex w-full flex-col w-full md:w-[50%] pt-2">
 
                 <label for="depName" class="my-2 text-lg font-semibold text-gray-600">Division Name :</label>
-                <input v-model="form.divisionName" type="text" id="depName" placeholder="Enter division name" class="rounded rounded-lg border border-blue-700 my-2" required/>
+                <input v-model="form.divisionName" type="text" id="depName" placeholder="Enter division name" class="rounded rounded-lg border border-blue-700 my-2" maxlength="30" required/>
                 
                 
                 <label for="departments" class="my-2 text-lg font-semibold text-gray-600" >Department :</label>

@@ -13,7 +13,7 @@
         <div class="flex flex-col align-items-center gap-3 mb-3 mt-10 w-full md:w-1/2">
             <label for="username" class="font-semibold w-6rem">Department Name</label>
             <!-- <InputText id="username" class="flex-auto border border-gray-500  " autocomplete="off"  placeholder="Enter department name" /> -->
-            <input v-model="form.departmentName" type="text" placeholder="Enter department name" class="flex-auto border border-gray-500 rounded " required/>
+            <input v-model="form.departmentName" type="text" placeholder="Enter department name" class="flex-auto border border-gray-500 rounded " maxlength="15" required/>
             <button @click="updateConfirmation" type="button" class="w-full btn-primary" >Save</button>
         </div>
     </DashboardLayout>
