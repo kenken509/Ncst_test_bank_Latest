@@ -31,9 +31,9 @@
                             {{ div.department.name }}
                         </td>
                         <td  v-if="$page.props.user.role === 'admin'" class="px-6 py-4 text-center ">
-                                <div  class="space-x-4">
-                                    <button @click="deleteConfirmation(div.id)" class=" btn-warning">Delete</button>
-                                    <Link :href="route('division.update.show',{id:div.id})" class="btn-success">
+                                <div  class="flex flex-col md:flex-row items-center md:justify-center space-y-2 md:space-y-0  md:space-x-4">
+                                    <button @click="deleteConfirmation(div.id)" class=" btn-warning w-full md:w-auto ">Delete</button>
+                                    <Link :href="route('division.update.show',{id:div.id})" class="btn-success w-full md:w-auto">
                                         Update
                                     </Link>
                                 </div>
