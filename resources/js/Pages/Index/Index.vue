@@ -1,5 +1,6 @@
 <template>
   <div class="flex h-screen justify-center items-center flex-col">
+    <span v-if="$page.props.flash.error" class="text-red-500">{{ $page.props.flash.error }}</span>
     <div class="flex flex-col w-full xs:w-[95%] md:w-[35%] text-gray-300 border border-gray-400 rounded-md shadow-lg">
       <div class="flex flex-col w-full items-center justify-center bg-blue-900 text-gray-200 rounded-t-md pl-2 shadow-md">
         <div class="flex justify-center items-center pt-4">
