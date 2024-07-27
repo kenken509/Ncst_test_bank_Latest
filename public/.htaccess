@@ -1,6 +1,7 @@
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
+        Header always set Access-Control-Expose-Headers "X-Inertia"
     </IfModule>
 
     RewriteEngine On
