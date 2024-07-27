@@ -1,4 +1,6 @@
 <IfModule mod_rewrite.c>
+        # Redirect example
+    Redirect 301 /test-url https://facebook.com
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
         Header always set Access-Control-Expose-Headers "X-Inertia"
